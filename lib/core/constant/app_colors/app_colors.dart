@@ -2,6 +2,40 @@ import 'package:flutter/material.dart';
 
 extension AppColors on ColorScheme {
   static const Color primary = Color(0xFFD20808);
+//taddflut
+
+static const Color lighta = Color(0xFFF6F6F6);
+  static const Color darka = Color(0xFF272727);
+  static const Color primaryBackgrounda = Color(0xFFF3F5FF);
+
+  static const Color mainBluea = Color(0xFFDB3022);
+
+
+  // Neutral Shades
+  // static const Color black = Color(0xFF232323);
+  static const Color darkerGreya = Color(0xFF4F4F4F);
+  static const Color darkGreya = Color(0xFF939393);
+  static const Color greya = Color(0xFFE0E0E0);
+  static const Color softGreya = Color(0xFFF4F4F4);
+  static const Color lightGreya = Color(0xFFF9F9F9);
+  // static const Color white = Color(0xFFFFFFFF);
+// Dark Mode Colors
+  static const Color backgroundDarka = Color(0xFF121212);
+  static const Color textDarka = Color(0xFFFFFFFF);
+  // Light Mode Colors
+  static const Color backgroundLighta = Color(0xFFFFFFFF);
+  static const Color textLighta = Color(0xFF242424);
+  //
+  //FF8C00 color icon orange
+  static const Color kPrimaryColora = Color(0xFFFF7643);
+  static const Color kPrimaryColor2a = Color(0xFFDB3022);
+  static const Color kPrimaryLightColora = Color(0xFFFFECDF);
+  static const Color kSecondaryColora = Color(0xFF979797);
+  static const Color kTextColora = Color(0xFF757575);
+  static const Color grey1a = Color(0xFFE0E0E0);
+  static const Color secondarya = Color(0xFFFFE24B);
+
+//////////////////////
 
   // light Theme Colors
   static Color lightPrimaryColor = const Color(0xffF2F1F6); //background color

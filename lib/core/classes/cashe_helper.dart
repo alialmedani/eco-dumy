@@ -1,4 +1,6 @@
 import 'package:eco_dumy/core/constant/end_points/cashe_helper_constant.dart';
+import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
  
@@ -147,17 +149,17 @@ class CacheHelper {
     return "${box.get(refreshToken)}";
   }
 
-  // static List<ProductModel>? get wishlist {
-  //   List<ProductModel> productModel =
-  //       wishlistBox.values.toList().cast<ProductModel>();
-  //   return productModel;
-  // }
+  static List<ProductModel>? get wishlist {
+    List<ProductModel> productModel =
+        wishlistBox.values.toList().cast<ProductModel>();
+    return productModel;
+  }
 
-  // static List<ProductModel>? get cartItem {
-  //   List<ProductModel> productModel =
-  //       cartBox.values.toList().cast<ProductModel>();
-  //   return productModel;
-  // }
+  static List<ProductModel>? get cartItem {
+    List<ProductModel> productModel =
+        cartBox.values.toList().cast<ProductModel>();
+    return productModel;
+  }
 
   static String? get userID {
     if (!box.containsKey(userId)) return null;
@@ -168,13 +170,22 @@ class CacheHelper {
   static int? get expiresin => box.get(expiresIn);
   static DateTime? get datenow => box.get(date);
 
-  // static Future<void> setUserInfo(LoginModel? value) =>
-  //     box.put(userModel, value);
+// set
+  static Future<void> setUserInfo(LoginModel? value) async {
+    if (value == null) return;
+    await box.put(userModel, value.toJson()); // <-- خزّنه كـ Map
+  }
 
-  // static LoginModel? get userInfo {
-  //   if (!box.containsKey(userModel)) return null;
-  //   return box.get(userModel);
-  // }
+  // get
+  static LoginModel? get userInfo {
+    if (!box.containsKey(userModel)) return null;
+    final data = box.get(userModel);
+    if (data is Map) {
+      return LoginModel.fromJson(Map<String, dynamic>.from(data));
+    }
+    return null;
+  }
+
 
   static void deleteCertificates() {
     setToken(null);

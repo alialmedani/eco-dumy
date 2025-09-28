@@ -1,16 +1,18 @@
 import 'dart:ui';
 
- import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:eco_dumy/core/boilerplate/pagination/cubits/pagination_cubit.dart';
 import 'package:eco_dumy/core/boilerplate/pagination/widgets/pagination_list.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
 import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
-import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
+  import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
+import 'package:eco_dumy/featuers/product/data/model/category_model.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
- 
+
 class CoffeeAppHomeScreen extends StatefulWidget {
   const CoffeeAppHomeScreen({super.key});
 
@@ -21,7 +23,7 @@ class CoffeeAppHomeScreen extends StatefulWidget {
 class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
   late final PageController _promoController;
   late final List<List<Color>> _categoryGradients;
- 
+
   double _promoPage = 0;
   int selectedIndex = 0;
 
@@ -53,8 +55,6 @@ class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
       [AppColors.orange, AppColors.xpurpleColor],
       [AppColors.lightXPrimary, AppColors.xprimaryColor],
     ];
-
- 
   }
 
   @override
@@ -119,9 +119,6 @@ class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                // child: _buildAnimatedHeader(context, userModel),
-              ),
-              SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppPaddingSize.padding_22,
@@ -151,7 +148,7 @@ class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
                   ),
                 ),
               ),
-                SliverToBoxAdapter(child: SizedBox(height: AppFontSize.size_25)),
+              SliverToBoxAdapter(child: SizedBox(height: AppFontSize.size_25)),
               SliverToBoxAdapter(child: _buildCategorySelection(categories)),
               SliverToBoxAdapter(child: SizedBox(height: AppFontSize.size_25)),
               SliverPadding(
@@ -189,10 +186,6 @@ class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
     );
   }
 
-
-
-
-  
   Widget _buildCategorySelection(List<String> categories) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -284,8 +277,6 @@ class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
   }
 }
 
- 
- 
 class _DrinkCard extends StatefulWidget {
   final ProductModel drink;
   final int index;

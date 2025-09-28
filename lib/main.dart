@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
             navigatorKey: Keys.navigatorKey,
             title: 'Task App',
             theme: appThemeData[AppTheme.light],
-            home: CoffeeAppHomeScreen(),
+            home: CacheHelper.token != null ? SplashSscreen1() : LoginScreen(),
           );
         },
       ),

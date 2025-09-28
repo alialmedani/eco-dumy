@@ -1,9 +1,6 @@
-// features/auth/data/model/login_model.dart
 class LoginModel {
   String? accessToken;
   String? refreshToken;
-
-  // (اختياري) لو حابب تحفظ معلومات المستخدم الراجعة من الـ API:
   int? id;
   String? username;
   String? email;
@@ -24,18 +21,29 @@ class LoginModel {
     this.image,
   });
 
-  LoginModel.fromJson(Map<String, dynamic> json) {
-    // مفاتيح dummyjson
-    accessToken = json['accessToken'];
-    refreshToken = json['refreshToken'];
+  // ⬇️ Factory من Map
+  factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
+    accessToken: json['accessToken'] as String?,
+    refreshToken: json['refreshToken'] as String?,
+    id: json['id'] as int?,
+    username: json['username'] as String?,
+    email: json['email'] as String?,
+    firstName: json['firstName'] as String?,
+    lastName: json['lastName'] as String?,
+    gender: json['gender'] as String?,
+    image: json['image'] as String?,
+  );
 
-    // (اختياري) حقول المستخدم:
-    id = json['id'];
-    username = json['username'];
-    email = json['email'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    gender = json['gender'];
-    image = json['image'];
-  }
+  // ⬇️ تحويل إلى Map
+  Map<String, dynamic> toJson() => {
+    'accessToken': accessToken,
+    'refreshToken': refreshToken,
+    'id': id,
+    'username': username,
+    'email': email,
+    'firstName': firstName,
+    'lastName': lastName,
+    'gender': gender,
+    'image': image,
+  };
 }

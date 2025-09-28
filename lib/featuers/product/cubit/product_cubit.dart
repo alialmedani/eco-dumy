@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:eco_dumy/featuers/product/data/usecase/get_all_categories_usecase.dart';
+   import 'package:eco_dumy/featuers/product/data/usecase/get_all_categories_usecase.dart';
 import 'package:meta/meta.dart';
 import '../../../core/boilerplate/pagination/cubits/pagination_cubit.dart';
 import '../../../core/results/result.dart';
@@ -9,6 +9,7 @@ part 'product_state.dart';
  
 class ProductCubit extends Cubit<ProductState> {
   PaginationCubit? productCubit;
+  PaginationCubit ? categoriesCubit; // ✅ كيوبت الكاتيغوري
 
  ProductCubit() : super(ProductInitial());
 
@@ -24,4 +25,6 @@ class ProductCubit extends Cubit<ProductState> {
       ProductRepository(),
     ).call(params: GetAllCategoriesParams(request: data));
   }
+    
+  
 }

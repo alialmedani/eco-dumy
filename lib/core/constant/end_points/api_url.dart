@@ -10,7 +10,8 @@ const loginUrl = '${baseUrl}auth/login';
 const registerUrl = '${baseUrl}api/app/mobile-ecommerce-user-info';
 
 const getAllProduct = '${baseUrl}products';
-const getCategoriesUrl = '$baseUrl/products/categories';
+const getCategoriesUrl = '${baseUrl}products/categories';
+String productsByCategoryUrl(String slug) => '$baseUrl/products/category/$slug';
 
 //
 // const String createDrinkOrderUrl = '${baseUrl}api/app/order';

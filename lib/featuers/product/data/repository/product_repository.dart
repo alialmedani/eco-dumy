@@ -5,8 +5,7 @@ import 'package:eco_dumy/core/repository/core_repository.dart';
 import 'package:eco_dumy/core/results/result.dart';
 import 'package:eco_dumy/featuers/product/data/model/category_model.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
-import 'package:eco_dumy/featuers/home/models/category_model.dart';
-import 'package:eco_dumy/featuers/product/data/usecase/get_all_categories_usecase.dart';
+  import 'package:eco_dumy/featuers/product/data/usecase/get_all_categories_usecase.dart';
 
 import '../usecase/get_all_product_usecase.dart';
 
@@ -37,7 +36,7 @@ class ProductRepository extends CoreRepository {
   }) async {
     final result = await RemoteDataSource.request<List<CategoryModel>>(
       withAuthentication: false,
-      url: getAllProduct,
+      url: getCategoriesUrl,
       method: HttpMethod.GET,
       queryParameters: params.toJson(),
       converter2: (json) {
@@ -51,4 +50,6 @@ class ProductRepository extends CoreRepository {
     );
     return call(result: result);
   }
+
+   
 }

@@ -1,12 +1,12 @@
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/featuers/auth/new/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/home/new/screen/tad/ss.dart';
 import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
- 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:ui';
 
- 
 import '../../classes/cashe_helper.dart';
 import '../../classes/notification.dart';
 import '../../utils/Navigation/navigation.dart';
@@ -39,45 +39,31 @@ class _SplashSscreen1State extends State<SplashSscreen1>
   }
 
   void _checkUserAuthentication() async {
-    // Start animations and timer immediately
     _startAnimations();
 
-    // Track navigation destinations
-    bool shouldNavigateToRoot = false;
-    bool shouldNavigateToOfficeboy = false;
-
-    // try {
-    //   final result = await context.read<ProfileCubit>().fetchCurrentCustomer();
-
-    //   if (result.hasDataOnly) {
-    //     if (result.data?.roles?.contains('User') == true) {
-    //       CacheHelper.setRole('User');
-    //       await FireBaseNotification().updateTopicSubscriptions();
-    //       shouldNavigateToRoot = true;
-    //     } else {
-    //       await FireBaseNotification().updateTopicSubscriptions();
-    //       shouldNavigateToOfficeboy = true;
-    //     }
-    //   }
-    // } catch (e) {
-    //   // If there's an error, we'll proceed with normal login flow after timer
-    // }
-
-    // Wait for timer to complete (3 seconds minimum from when animations started)
-    // The timer animation and countdown are already running from _startTimer()
+    // انتظر 3 ثواني (الأنيميشن/العداد)
     await Future.delayed(const Duration(seconds: 3));
 
-    // Navigate based on API result
-    // if (mounted) {
-    //   if (shouldNavigateToRoot) {
-    //     Navigation.pushAndRemoveUntil(const RootScreen());
-    //   } else if (shouldNavigateToOfficeboy) {
-    //     Navigation.pushAndRemoveUntil(const OfficeBoyOrdersScreen());
-    //   } else {
-    //     // No user data or error occurred, proceed to login
-    //     _navigateToLogin();
-    //   }
-    // }
+    if (!mounted) return;
+
+    final hasToken = (CacheHelper.token?.isNotEmpty ?? false);
+
+    if (hasToken) {
+      _navigateToHome();
+    } else {
+      _navigateToLogin();
+    }
+  }
+
+  void _navigateToHome() {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, a, __) => HomeScreenA(), // أو RootScreen إذا عندك
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
+      ),
+    );
   }
 
   void _initializeAnimations() {
@@ -153,20 +139,17 @@ class _SplashSscreen1State extends State<SplashSscreen1>
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const LoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1.0, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
-          );
-        },
+        pageBuilder: (_, a, __) => const LoginScreen(),
+        transitionsBuilder: (_, animation, __, child) => FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        ),
       ),
     );
   }
