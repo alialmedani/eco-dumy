@@ -184,6 +184,8 @@ class _CoffeeAppHomeScreenState extends State<CoffeeAppHomeScreen> {
         },
       ),
     );
+  
+  
   }
 
   Widget _buildCategorySelection(List<String> categories) {

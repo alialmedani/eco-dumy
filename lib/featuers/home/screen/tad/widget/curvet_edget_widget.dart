@@ -1,4 +1,4 @@
-import 'package:eco_dumy/featuers/home/new/screen/tad/widget/custom_curved_edges.dart';
+import 'package:eco_dumy/featuers/home/screen/tad/widget/custom_curved_edges.dart';
 import 'package:flutter/material.dart';
 
 class CurvetEdgetWidget extends StatelessWidget {

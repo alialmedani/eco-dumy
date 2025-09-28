@@ -10,6 +10,8 @@ static const Color lighta = Color(0xFFF6F6F6);
 
   static const Color mainBluea = Color(0xFFDB3022);
 
+  static const Color darkBluea = Color(0xFF242424);
+  static const Color graya = Color(0xFF757575);
 
   // Neutral Shades
   // static const Color black = Color(0xFF232323);

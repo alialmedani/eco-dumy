@@ -4,9 +4,8 @@ import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/featuers/auth/new/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/new/screen/login_screen.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
-import 'package:eco_dumy/featuers/home/logic/home_cubit.dart';
-import 'package:eco_dumy/featuers/home/new/cubit/home_cubit.dart';
-import 'package:eco_dumy/featuers/home/new/screen/home_screen.dart';
+ import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
+import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
 import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
 import 'package:eco_dumy/featuers/root/cubit/root_cubit.dart';
 import 'package:eco_dumy/firebase_options.dart';
@@ -42,7 +41,7 @@ void main() async {
       supportedLocales: const [Locale('ar'), Locale('en')],
       path: 'assets/translations',
       fallbackLocale: const Locale('ar'),
-      startLocale: const Locale('ar'),
+      startLocale: const Locale('en'),
       useOnlyLangCode: true,
       saveLocale: true,
       child: const MyApp(),

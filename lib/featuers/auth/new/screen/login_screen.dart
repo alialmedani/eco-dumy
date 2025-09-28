@@ -10,8 +10,8 @@ import 'package:eco_dumy/core/ui/screens/splash_screen.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
 import 'package:eco_dumy/featuers/auth/new/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
-import 'package:eco_dumy/featuers/home/new/screen/home_screen.dart';
-import 'package:eco_dumy/featuers/home/new/screen/tad/ss.dart';
+import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
+import 'package:eco_dumy/featuers/home/screen/tad/ss.dart';
   
  import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,6 +1,6 @@
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/featuers/auth/new/screen/login_screen.dart';
-import 'package:eco_dumy/featuers/home/new/screen/tad/ss.dart';
+import 'package:eco_dumy/featuers/home/screen/tad/ss.dart';
 import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
 
 import 'package:flutter/material.dart';
