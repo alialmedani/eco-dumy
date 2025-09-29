@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
-import 'package:eco_dumy/featuers/home/screen/tad/widget/rounded_container.dart';
+import 'package:eco_dumy/featuers/home/screen/widget/rounded_container.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
 import 'package:flutter/material.dart';

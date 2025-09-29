@@ -10,7 +10,7 @@ import 'package:eco_dumy/core/ui/screens/splash_screen.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
- import 'package:eco_dumy/featuers/home/screen/tad/home_screen.dart';
+ import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
   
  import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

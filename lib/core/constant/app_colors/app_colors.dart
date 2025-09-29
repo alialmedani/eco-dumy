@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 extension AppColors on ColorScheme {
   static const Color primary = Color(0xFFD20808);
 //taddflut
+  static const Color textPrimarya = Color(0xFF333333);
+  static const Color textSecondarya = Color(0xFF6C757D);
+  static const Color textWhitea = Colors.white;
+  static const Color lightGraya = Color(0xFFC2C2C2);
 
 static const Color lighta = Color(0xFFF6F6F6);
   static const Color darka = Color(0xFF272727);

@@ -13,6 +13,8 @@ const getAllProduct = '${baseUrl}products';
 const getCategoriesUrl = '${baseUrl}products/categories';
 String productsByCategoryUrl(String slug) => '$baseUrl/products/category/$slug';
 
+// منتجات التصنيف المحدد
+
 //
 // const String createDrinkOrderUrl = '${baseUrl}api/app/order';
 // const String changeDrinkOrderStatusUrl =
@@ -26,7 +28,7 @@ String productsByCategoryUrl(String slug) => '$baseUrl/products/category/$slug';
 ///user url////////////
 
 const currentUserUrl = '${baseUrl}api/app/current-customer';
-const getPlaceUrl = '${baseUrl}api/app/floor/offices/autocomplete';
+// const getPlaceUrl = '${baseUrl}api/app/floor/offices/autocomplete';
 
 //order//
 

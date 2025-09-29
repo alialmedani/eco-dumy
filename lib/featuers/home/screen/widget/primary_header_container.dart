@@ -1,6 +1,6 @@
  
-import 'package:eco_dumy/featuers/home/screen/tad/widget/circular_container.dart';
-import 'package:eco_dumy/featuers/home/screen/tad/widget/curvet_edget_widget.dart';
+import 'package:eco_dumy/featuers/home/screen/widget/circular_container.dart';
+import 'package:eco_dumy/featuers/home/screen/widget/curvet_edget_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

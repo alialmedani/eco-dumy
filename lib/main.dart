@@ -3,6 +3,7 @@ import 'package:eco_dumy/check_update.dart';
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/product/screen/category/all_categories_screen.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
  import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
@@ -72,7 +73,8 @@ class MyApp extends StatelessWidget {
             navigatorKey: Keys.navigatorKey,
             title: 'Task App',
             theme: appThemeData[AppTheme.light],
-            home: CacheHelper.token != null ? SplashSscreen1() : LoginScreen(),
+            // home: CacheHelper.token != null ? SplashSscreen1() : LoginScreen(),
+            home: AllCategoriesScreen(),
           );
         },
       ),
