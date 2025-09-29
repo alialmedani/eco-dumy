@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:eco_dumy/featuers/auth/new/data/repo/auth_repository.dart';
-import 'package:eco_dumy/featuers/auth/new/data/uscase/login_usecase.dart';
+import 'package:eco_dumy/featuers/auth/data/repo/auth_repository.dart';
+import 'package:eco_dumy/featuers/auth/data/uscase/login_usecase.dart';
 import 'package:meta/meta.dart';
  
 import 'dart:async';
-import '../../../../core/results/result.dart';
+import '../../../core/results/result.dart';
 
 part 'auth_state.dart';
 

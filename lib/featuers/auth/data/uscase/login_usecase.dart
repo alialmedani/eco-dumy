@@ -3,8 +3,8 @@
 import 'package:eco_dumy/core/params/base_params.dart';
 import 'package:eco_dumy/core/results/result.dart';
 import 'package:eco_dumy/core/usecase/usecase.dart';
-import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
-import 'package:eco_dumy/featuers/auth/new/data/repo/auth_repository.dart';
+import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/auth/data/repo/auth_repository.dart';
 
  
   

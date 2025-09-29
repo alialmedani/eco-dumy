@@ -1,5 +1,5 @@
 import 'package:eco_dumy/core/constant/end_points/cashe_helper_constant.dart';
-import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

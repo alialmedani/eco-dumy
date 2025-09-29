@@ -5,9 +5,9 @@ import 'package:eco_dumy/core/data_source/remote_data_source.dart';
 import 'package:eco_dumy/core/http/http_method.dart';
 import 'package:eco_dumy/core/repository/core_repository.dart';
 import 'package:eco_dumy/core/results/result.dart';
-import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
-import 'package:eco_dumy/featuers/auth/new/data/uscase/login_usecase.dart';
-import 'package:eco_dumy/featuers/auth/new/data/uscase/refresh_token_usecase.dart';
+import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/auth/data/uscase/login_usecase.dart';
+import 'package:eco_dumy/featuers/auth/data/uscase/refresh_token_usecase.dart';
 
  
 

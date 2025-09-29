@@ -1,15 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/check_update.dart';
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
-import 'package:eco_dumy/featuers/auth/new/cubit/auth_cubit.dart';
-import 'package:eco_dumy/featuers/auth/new/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
+import 'package:eco_dumy/featuers/auth/screen/login_screen.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
- import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
-import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
-import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
+import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
+ import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
 import 'package:eco_dumy/featuers/root/cubit/root_cubit.dart';
 import 'package:eco_dumy/firebase_options.dart';
-import 'package:eco_dumy/generated/l10n.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

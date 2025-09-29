@@ -8,10 +8,9 @@ import 'package:eco_dumy/core/constant/text_styles/app_text_style.dart';
 import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
 import 'package:eco_dumy/core/ui/screens/splash_screen.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
-import 'package:eco_dumy/featuers/auth/new/cubit/auth_cubit.dart';
-import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
-import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
-import 'package:eco_dumy/featuers/home/screen/tad/ss.dart';
+import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
+import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
+ import 'package:eco_dumy/featuers/home/screen/tad/home_screen.dart';
   
  import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -188,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           CacheHelper.setToken(res.accessToken);
                           CacheHelper.setRefreshToken(res.refreshToken);
                             CacheHelper.setUserInfo(res);
-                          Navigation.push(HomeScreenA());
+                          Navigation.push(HomeScreen());
                         },
                         child: ElevatedButton(
                           onPressed: null,
@@ -218,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) =>   HomeScreenA(),
+                            builder: (_) =>   HomeScreen(),
                           ),
                         );
                       },

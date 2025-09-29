@@ -1,7 +1,8 @@
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
-import 'package:eco_dumy/featuers/auth/new/screen/login_screen.dart';
-import 'package:eco_dumy/featuers/home/screen/tad/ss.dart';
+import 'package:eco_dumy/featuers/auth/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/home/screen/tad/home_screen.dart';
 import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
+import 'package:eco_dumy/featuers/root/screen/root_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,7 +60,7 @@ class _SplashSscreen1State extends State<SplashSscreen1>
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, a, __) => HomeScreenA(), // أو RootScreen إذا عندك
+        pageBuilder: (_, a, __) => RootScreen(), // أو RootScreen إذا عندك
         transitionsBuilder: (_, animation, __, child) =>
             FadeTransition(opacity: animation, child: child),
       ),

@@ -3,7 +3,7 @@ import 'package:eco_dumy/core/boilerplate/pagination/widgets/pagination_list.dar
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
-import 'package:eco_dumy/featuers/auth/new/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_state.dart';
 import 'package:eco_dumy/featuers/home/screen/tad/product_grid.dart';
@@ -14,8 +14,8 @@ import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-class HomeScreenA extends StatelessWidget {
-  HomeScreenA({super.key});
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
   final ScrollController _scrollController = ScrollController();
 
   @override
