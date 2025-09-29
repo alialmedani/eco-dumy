@@ -1,18 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:eco_dumy/featuers/product/screen/category/products_by_category_page.dart'; // صفحة المنتجات حسب التصنيف (أعد التسمية لو لزم)
-import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
+  import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
+import 'package:eco_dumy/featuers/product/screen/category/products_by_category_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eco_dumy/core/boilerplate/pagination/widgets/pagination_list.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/featuers/product/data/model/category_model.dart';
-import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
-import 'package:eco_dumy/core/boilerplate/pagination/models/get_list_request.dart';
-
-// ↓↓↓ سنستخدم الريبو + اليوزكيس الموجودين عندك
-import 'package:eco_dumy/featuers/product/data/repository/product_repository.dart';
-import 'package:eco_dumy/featuers/product/data/usecase/get_products_by_category_usecase.dart';
 
 class AllCategoriesScreen extends StatelessWidget {
   const AllCategoriesScreen({super.key});
@@ -28,7 +22,12 @@ class AllCategoriesScreen extends StatelessWidget {
         centerTitle: true,
         iconTheme: const IconThemeData(color: AppColors.white),
         title: Text(
-          'all_categories'.tr(),
+          // لو المفتاح ناقص، استعمل نص بديل بسيط
+          () {
+            final k = 'all_categories';
+            final t = k.tr();
+            return t == k ? 'All categories' : t;
+          }(),
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.white,
             fontWeight: FontWeight.bold,
@@ -47,7 +46,11 @@ class AllCategoriesScreen extends StatelessWidget {
         },
         noDataWidget: Center(
           child: Text(
-            'no_categories_available'.tr(),
+            () {
+              final k = 'no_categories_available';
+              final t = k.tr();
+              return t == k ? 'No categories available' : t;
+            }(),
             style: theme.textTheme.titleMedium?.copyWith(
               color: AppColors.white,
             ),
@@ -62,19 +65,19 @@ class AllCategoriesScreen extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: AppPaddingSize.padding_16,
               crossAxisSpacing: AppPaddingSize.padding_16,
-              mainAxisExtent: 180,
+              mainAxisExtent: 180, // ← مناسب بعد تقييد الصورة
             ),
             itemBuilder: (context, index) {
               final item = list[index];
+              final slug = item.slug;
+              final title = item.name;
 
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => ProductsByCategoryPage(
-                        slug: item.slug, // نمرّر الـ slug الصحيح
-                        title: item.name, // للعرض فقط
-                      ),
+                      builder: (_) =>
+                          ProductsByCategoryPage(slug: slug, title: title),
                     ),
                   );
                 },
@@ -93,18 +96,54 @@ class AllCategoriesScreen extends StatelessWidget {
                     ],
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      // ← صورة من أول منتج داخل هذا التصنيف
-                      _CategoryPreviewImage(slug: item.slug),
+                      // ✅ صورة معاينة عبر Bloc (بدون FutureBuilder)
+                      SizedBox(
+                        height: 110,
+                        width: double.infinity,
+                        child: BlocBuilder<ProductCubit, ProductState>(
+                          buildWhen: (prev, curr) =>
+                              curr is CategoryThumbsUpdated,
+                          builder: (context, state) {
+                            final cubit = context.read<ProductCubit>();
+                            final img = cubit.getCategoryThumb(slug);
 
-                      const SizedBox(height: 10),
+                            // اطلب التحميل مرّة واحدة إذا غير موجودة
+                            if (img == null &&
+                                !(state is CategoryThumbsUpdated &&
+                                    state.thumbs.containsKey(slug))) {
+                              cubit.ensureCategoryThumbLoaded(slug);
+                            }
+
+                            if (img == null) {
+                              return const _CatImagePlaceholder();
+                            }
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                AppPaddingSize.padding_16,
+                              ),
+                              child: Image.network(
+                                img,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    const _CatImagePlaceholder(),
+                                loadingBuilder: (ctx, child, prog) =>
+                                    prog == null
+                                    ? child
+                                    : const _CatImageSkeleton(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 8),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppPaddingSize.padding_8,
                         ),
                         child: Text(
-                          item.name,
+                          title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -126,109 +165,7 @@ class AllCategoriesScreen extends StatelessWidget {
   }
 }
 
-/// ويدجت تجيب أول منتج (limit=1) وتعرض صورته كمصغّرة للتصنيف
-class _CategoryPreviewImage extends StatefulWidget {
-  final String slug;
-  const _CategoryPreviewImage({required this.slug});
-
-  @override
-  State<_CategoryPreviewImage> createState() => _CategoryPreviewImageState();
-}
-
-class _CategoryPreviewImageState extends State<_CategoryPreviewImage> {
-  Future<String?>? _future;
-
-  @override
-  void initState() {
-    super.initState();
-    _future = _fetchFirstProductImage(widget.slug);
-  }
-
-  Future<String?> _fetchFirstProductImage(String slug) async {
-    // نادينا الـ UseCase عبر الريبو مباشرة (لا نعدّل core)
-    final repo = ProductRepository();
-    final params = GetProductsByCategoryParams(
-      request: GetListRequest(take: 1, skip: 0),
-      category: slug,
-    );
-
-    final result = await repo.getProductsByCategory(params: params);
-
-    // ملاحظة: افترضت أن Result لديك فيه when(success/failure).
-    // إن كانت واجهتك مختلفة (fold / isSuccess / data)، عدّل السطور الثلاثة التالية وفق Coreك.
-    String? imageUrl;
-    // try/catch لحماية من أي اختلاف بصيغة Result
-    try {
-      // إذا عندك .when
-      // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-      // ^ فقط لو Result عندكم محدد @visibleForTesting، تجاهل التحذير
-      // بديل: افحص أنواعه يدويًا إذا لزم.
-      // هنا نفترض:
-      // result.when(success: (data) { ... }, failure: (err) { ... });
-
-      // نحاول الوصول لقائمة المنتجات
-      dynamic data;
-      // طرق فكّ Result شائعة: (عدّل حسب Coreك)
-      // 1) when
-      // data = await result.when(success: (d) => d, failure: (_) => <ProductModel>[]);
-      // 2) maybeWhen
-      // data = result.maybeWhen(success: (d) => d, orElse: () => <ProductModel>[]);
-      // 3) خصائص مباشرة:
-      if ((result as dynamic).data != null) {
-        data = (result as dynamic).data;
-      } else if ((result as dynamic).value != null) {
-        data = (result as dynamic).value;
-      }
-
-      final List<ProductModel> list =
-          (data as List?)?.cast<ProductModel>() ?? const [];
-
-      if (list.isNotEmpty) {
-        final p = list.first;
-        if ((p.thumbnail).toString().isNotEmpty) {
-          imageUrl = p.thumbnail.toString();
-        } else if ((p.images is List) && (p.images.isNotEmpty)) {
-          imageUrl = p.images!.first?.toString();
-        }
-      }
-    } catch (_) {
-      // تجاهل: سنُظهر Placeholder
-    }
-
-    return imageUrl; // قد تكون null => نعرض Placeholder
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: _future,
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.waiting) {
-          return const _CatImageSkeleton();
-        }
-        final url = snap.data;
-        if (url == null || url.isEmpty) {
-          return const _CatImagePlaceholder();
-        }
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
-          child: AspectRatio(
-            aspectRatio: 1, // مربع
-            child: Image.network(
-              url,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const _CatImagePlaceholder(),
-              loadingBuilder: (ctx, child, progress) {
-                if (progress == null) return child;
-                return const _CatImageSkeleton();
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
+// ---- Widgets بسيطة للـ Placeholder / Skeleton ----
 
 class _CatImagePlaceholder extends StatelessWidget {
   const _CatImagePlaceholder();
@@ -236,16 +173,16 @@ class _CatImagePlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90,
-      height: 90,
       decoration: BoxDecoration(
         color: AppColors.lightGraya,
         borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
       ),
-      child: const Icon(
-        Icons.image_not_supported,
-        color: AppColors.darkBluea,
-        size: 28,
+      child: const Center(
+        child: Icon(
+          Icons.image_not_supported,
+          color: AppColors.darkBluea,
+          size: 28,
+        ),
       ),
     );
   }
@@ -257,8 +194,6 @@ class _CatImageSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 90,
-      height: 90,
       decoration: BoxDecoration(
         color: AppColors.lightGraya.withOpacity(0.6),
         borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),

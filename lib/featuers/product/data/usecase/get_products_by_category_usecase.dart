@@ -1,3 +1,4 @@
+// featuers/product/data/usecase/get_products_by_category_usecase.dart
 import 'package:eco_dumy/core/boilerplate/pagination/models/get_list_request.dart';
 import 'package:eco_dumy/core/params/base_params.dart';
 import 'package:eco_dumy/core/usecase/usecase.dart';
@@ -7,23 +8,33 @@ import 'package:eco_dumy/featuers/product/data/repository/product_repository.dar
 
 class GetProductsByCategoryParams extends BaseParams {
   final GetListRequest? request;
+  final String category; // slug
+  final List<String>? selectFields; // ⬅️ جديد
 
-  /// كان اسمها سابقًا `category`. سنبقي الاسم كما هو،
-  /// ونضيف Getter اسمه `slug` ليتوافق مع أي استدعاءات موجودة.
-  final String category;
+  GetProductsByCategoryParams({
+    required this.request,
+    required this.category,
+    this.selectFields,
+  });
 
-  GetProductsByCategoryParams({required this.request, required this.category});
-
-  /// توافق خلفي: أي كود يستدعي params.slug سيعمل الآن
   String get slug => category;
 
-  /// DummyJSON يستخدم limit/skip
+  @override
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (request != null) {
-      if (request!.take != null) data['limit'] = request!.take;
-      if (request!.skip != null) data['skip'] = request!.skip;
+    final data = <String, dynamic>{};
+
+    // دمج limit/skip من الـ request لو موجودة
+    final r = request;
+    if (r != null) {
+      if (r.take != null) data['limit'] = r.take;
+      if (r.skip != null) data['skip'] = r.skip;
     }
+
+    // أهم سطر: حطّ select=title,thumbnail,images
+    if (selectFields != null && selectFields!.isNotEmpty) {
+      data['select'] = selectFields!.join(',');
+    }
+
     return data;
   }
 }
