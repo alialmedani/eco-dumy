@@ -53,21 +53,16 @@ class ProductRepository extends CoreRepository {
   }
 
   // داخل ProductRepository
+// featuers/product/data/repository/product_repository.dart
   Future<Result<List<ProductModel>>> getProductsByCategory({
     required GetProductsByCategoryParams params,
   }) async {
-    // طبع القاعدة بدون سلاشات زائدة في النهاية
-    final String base = getAllProduct.replaceAll(RegExp(r'/+$'), '');
-    // تطبيع اسم التصنيف: trim + lowercase + URL-encode (احتياطًا)
-    final String cat = Uri.encodeComponent((params.slug).trim().toLowerCase());
-
-    final String url = '$base/category/$cat';
-
     final result = await RemoteDataSource.request<List<ProductModel>>(
       withAuthentication: false,
-      url: url,
+      // مهم: المسار فيه الـ slug
+      url: '$getProductsBaseUrl/category/${params.slug}',
       method: HttpMethod.GET,
-      queryParameters: params.toJson(), // يحمل limit/skip
+      queryParameters: params.toJson(), // ⬅️ هون رح ينزل select فعليًا
       converter: (json) {
         final list = (json['products'] as List?) ?? const [];
         return list
@@ -79,6 +74,7 @@ class ProductRepository extends CoreRepository {
     );
     return call(result: result);
   }
+
 
 
   

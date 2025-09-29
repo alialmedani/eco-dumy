@@ -23,7 +23,8 @@ class ProductListViewItem extends StatelessWidget {
     final isArabic = locale.languageCode == 'ar';
     if (product == null) return const SizedBox();
     // final dark = HelperFunctions.isDarkMode(context);
-    return GestureDetector(
+    return
+     GestureDetector(
       onTap: () {
         // context.pushNamed(Routes.detailsPage, arguments: product);
         Navigation.push(DetailsPage(product: product!));

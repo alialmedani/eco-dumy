@@ -8,6 +8,8 @@ const baseUrl = 'https://dummyjson.com/'; //base_url_live
 /////auth_url////////////
 const loginUrl = '${baseUrl}auth/login';
 const registerUrl = '${baseUrl}api/app/mobile-ecommerce-user-info';
+const String getProductsBaseUrl = 'https://dummyjson.com/products';
+// فالـ url يصير .../products/category/{slug}
 
 const getAllProduct = '${baseUrl}products';
 const getCategoriesUrl = '${baseUrl}products/categories';

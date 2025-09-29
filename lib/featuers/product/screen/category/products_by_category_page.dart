@@ -1,14 +1,21 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:eco_dumy/core/boilerplate/pagination/widgets/pagination_list.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
-import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
+import 'package:eco_dumy/featuers/product/screen/product_list_view_item.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+
 class ProductsByCategoryPage extends StatelessWidget {
-  final String slug; // يُستخدم في الـ API (مثل: beauty, home-decoration)
-  final String title; // للعرض فقط (مثل: Beauty, Home Decoration)
+  final String slug; // ex: beauty, home-decoration
+  final String title; // ex: Beauty
 
   const ProductsByCategoryPage({
     super.key,
@@ -22,13 +29,218 @@ class ProductsByCategoryPage extends StatelessWidget {
     return withSpaces[0].toUpperCase() + withSpaces.substring(1).toLowerCase();
   }
 
-  // محاولة ترجمة مع fallback إن كانت المفاتيح ناقصة
   String _titleText(BuildContext context) {
     final key = 'products_of';
     final tr = key.tr(namedArgs: {'category': _pretty(title)});
-    // إذا رجع نفس المفتاح (دلالة أنه غير موجود)، استخدم نص بسيط
-    if (tr == key) return 'Products of ${_pretty(title)}';
-    return tr;
+    return tr == key ? 'Products of ${_pretty(title)}' : tr;
+  }
+
+  // ---------------- UI helpers ----------------
+
+  Widget _imageSkeletonRounded({double? radius}) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(
+            radius ?? AppPaddingSize.padding_16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _netImage(
+    String url, {
+    double? radius,
+    BoxFit fit = BoxFit.cover,
+    Widget? error,
+  }) {
+    return Image.network(
+      url,
+      fit: fit,
+      loadingBuilder: (ctx, child, progress) {
+        if (progress == null) return child;
+        return _imageSkeletonRounded(
+          radius: radius ?? AppPaddingSize.padding_12,
+        );
+      },
+      errorBuilder: (ctx, err, st) => error ?? const _ImagePlaceholder(),
+    );
+  }
+
+  Widget _gridItem(
+    BuildContext context, {
+    required ProductModel product,
+    required int index,
+  }) {
+    final theme = Theme.of(context);
+
+    String? img;
+    if ((product.thumbnail ?? '').toString().isNotEmpty) {
+      img = product.thumbnail!.toString();
+    } else if ((product.images is List) &&
+        (product.images?.isNotEmpty ?? false)) {
+      img = product.images!.first?.toString();
+    }
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: Duration(milliseconds: 300 + index * 50),
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 30 * (1 - value)),
+            child: Transform.scale(scale: 0.95 + 0.05 * value, child: child),
+          ),
+        );
+      },
+      child: Material(
+        color: Colors.grey[900],
+        borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
+        elevation: 3,
+        shadowColor: Colors.black.withOpacity(0.08),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
+          onTap: () {
+            // نفس صفحة التفاصيل تبعك
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => DetailsPage(product: product)),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(AppPaddingSize.padding_12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // صورة
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    AppPaddingSize.padding_12,
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 1.5,
+                    child: (img == null || img.isEmpty)
+                        ? _imageSkeletonRounded(
+                            radius: AppPaddingSize.padding_12,
+                          )
+                        : _netImage(
+                            img,
+                            radius: AppPaddingSize.padding_12,
+                            fit: BoxFit.cover,
+                            error: const _ImagePlaceholder(),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // عنوان
+                Text(
+                  product.title?.toString() ?? '',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textDarka,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                // سعر + تقييم
+                Row(
+                  children: [
+                    if (product.price != null)
+                      Text(
+                        '${product.price}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppColors.graya,
+                        ),
+                      ),
+                    if (product.price != null && product.rating != null)
+                      const SizedBox(width: 10),
+                    if (product.rating != null)
+                      Row(
+                        children: [
+                          const Icon(Icons.star, size: 14, color: Colors.amber),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${product.rating}',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: AppColors.graya,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildCarousel(List<ProductModel> list) {
+    final items = list
+        .where((p) => (p.images?.isNotEmpty ?? false))
+        .take(5)
+        .toList();
+    if (items.isEmpty)
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: CarouselSlider(
+          options: CarouselOptions(
+            height: 220,
+            autoPlay: true,
+            enlargeCenterPage: true,
+            viewportFraction: 0.9,
+            enableInfiniteScroll: true,
+            autoPlayInterval: const Duration(seconds: 4),
+            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+            autoPlayCurve: Curves.fastOutSlowIn,
+          ),
+          items: items.map((p) {
+            final first = p.images!.first?.toString() ?? '';
+            return Builder(
+              builder: (context) => InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: () {
+                  // لو بدك صفحة زوم
+                  // Navigator.of(context).pushNamed(Routes.imageZoomPage, arguments: {'imageUrl': first});
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(22),
+                    child: _netImage(
+                      first,
+                      fit: BoxFit.cover,
+                      error: const Icon(Icons.broken_image, size: 100),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 
   @override
@@ -49,6 +261,8 @@ class ProductsByCategoryPage extends StatelessWidget {
           ),
         ),
       ),
+
+      // PaginationList نفسها، لكن منرجّع Slivers (كاروسيل + Grid)
       body: PaginationList<ProductModel>(
         withRefresh: true,
         physics: const BouncingScrollPhysics(),
@@ -56,7 +270,6 @@ class ProductsByCategoryPage extends StatelessWidget {
           context.read<ProductCubit>().productCubit = cubit;
         },
         repositoryCallBack: (data) {
-          // DummyJSON يدعم limit/skip مع مسار category أيضًا
           if (data.skip == 0) data.take = 12;
           return context.read<ProductCubit>().fetchProductsByCategoryServices(
             request: data,
@@ -65,7 +278,6 @@ class ProductsByCategoryPage extends StatelessWidget {
         },
         noDataWidget: Center(
           child: Text(
-            // fallback لو المفتاح ناقص
             () {
               final key = 'no_products_available';
               final tr = key.tr();
@@ -76,137 +288,61 @@ class ProductsByCategoryPage extends StatelessWidget {
             ),
           ),
         ),
+
         listBuilder: (list) {
-          // كل عنصر: صورة + عنوان + سعر (اختياري) بتصميم بسيط ونظيف
-          return ListView.separated(
-            padding: const EdgeInsets.all(AppPaddingSize.padding_16),
+          final products = List<ProductModel>.from(list);
+
+          return CustomScrollView(
             physics: const BouncingScrollPhysics(),
-            itemCount: list.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final item = list[index];
+            slivers: [
+              if (products.isNotEmpty) _buildCarousel(products),
 
-              // جِب أفضل رابط للصورة: thumbnail ثم أول صورة
-              String? imageUrl;
-              if ((item.thumbnail ?? '').toString().isNotEmpty) {
-                imageUrl = item.thumbnail!.toString();
-              } else if ((item.images is List) &&
-                  (item.images?.isNotEmpty ?? false)) {
-                // بعض الـ APIs ترجع List<dynamic>، لذلك نحاول cast إلى String
-                final first = item.images!.first;
-                imageUrl = first?.toString();
-              }
-
-              return Container(
-                padding: const EdgeInsets.all(AppPaddingSize.padding_12),
-                decoration: BoxDecoration(
-                  color: AppColors.darka,
-                  borderRadius: BorderRadius.circular(
-                    AppPaddingSize.padding_16,
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppPaddingSize.padding_16,
+                ),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: AppPaddingSize.padding_16,
+                    crossAxisSpacing: AppPaddingSize.padding_16,
+                    // نفس ارتفاع الكارت تبعك (أنت بالأصل عامل 320)
+                    mainAxisExtent: 320,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // صورة المنتج (80x80) بزاويا دائرية
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        AppPaddingSize.padding_12,
-                      ),
-                      child: SizedBox(
-                        width: 80,
-                        height: 80,
-                        child: imageUrl == null || imageUrl.isEmpty
-                            ? _ImagePlaceholder()
-                            : Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                // Placeholder أثناء التحميل
-                                loadingBuilder: (ctx, child, progress) {
-                                  if (progress == null) return child;
-                                  return const _ImageSkeleton();
-                                },
-                                // صورة fallback عند الخطأ
-                                errorBuilder: (ctx, error, stack) =>
-                                    const _ImagePlaceholder(),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // تفاصيل
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // العنوان
-                          Text(
-                            item.title?.toString() ?? '',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = products[index];
+
+                    // (اختياري) أنيميشن دخول بسيطة حوالين الكارت
+                    return TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0, end: 1),
+                      duration: Duration(milliseconds: 300 + index * 40),
+                      builder: (context, v, child) {
+                        return Opacity(
+                          opacity: v,
+                          child: Transform.translate(
+                            offset: Offset(0, 20 * (1 - v)),
+                            child: child,
                           ),
-                          const SizedBox(height: 6),
-                          // سطر ثانٍ: السعر والتقييم (اختياريان)
-                          Row(
-                            children: [
-                              if (item.price != null)
-                                Text(
-                                  // تنسيق بسيط للسعر
-                                  '${item.price}',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: AppColors.graya,
-                                  ),
-                                ),
-                              if (item.price != null && item.rating != null)
-                                const SizedBox(width: 10),
-                              if (item.rating != null)
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      size: 14,
-                                      color: Colors.amber,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${item.rating}',
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(color: AppColors.graya),
-                                    ),
-                                  ],
-                                ),
-                            ],
-                          ),
-                        ],
+                        );
+                      },
+                      // هون نستعمل نفس كارت الهوم
+                      child: ProductListViewItem(
+                        product: product,
+                        itemIndex: index,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    // أيقونة بسيطة للدخول إلى التفاصيل لاحقًا
-                    const Icon(
-                      Icons.chevron_right,
-                      color: AppColors.graya,
-                      size: 22,
-                    ),
-                  ],
+                    );
+                  }, childCount: products.length),
                 ),
-              );
-            },
+              ),
+            ],
           );
         },
       ),
     );
   }
 }
+
+// --------- Placeholders ---------
 
 class _ImagePlaceholder extends StatelessWidget {
   const _ImagePlaceholder();
@@ -220,24 +356,6 @@ class _ImagePlaceholder extends StatelessWidget {
           Icons.image_not_supported,
           size: 24,
           color: AppColors.darkBluea,
-        ),
-      ),
-    );
-  }
-}
-
-class _ImageSkeleton extends StatelessWidget {
-  const _ImageSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.lightGraya.withOpacity(0.6),
-      child: const Center(
-        child: SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator(strokeWidth: 2),
         ),
       ),
     );

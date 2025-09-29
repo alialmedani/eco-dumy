@@ -1,4 +1,5 @@
 import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
+import 'package:eco_dumy/featuers/product/screen/category/all_categories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -6,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'navigation_cubit.dart';
 
 // استورد صفحاتك الفعلية:
- 
 
 // ألوانك
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
@@ -20,11 +20,12 @@ class RootScreen extends StatelessWidget {
   // بدّل الشاشات حسب مشروعك
   final List<Widget> screens = [
     HomeScreen(),
-    HomeScreen(),
-    HomeScreen(),
+    const Placeholder(),
+    const Placeholder(),
+
+    AllCategoriesScreen(),
     // حط شاشة التصنيفات تبعك هون
     const Placeholder(),
-    HomeScreen(),
   ];
 
   @override

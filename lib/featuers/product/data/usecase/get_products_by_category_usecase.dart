@@ -19,7 +19,6 @@ class GetProductsByCategoryParams extends BaseParams {
 
   String get slug => category;
 
-  @override
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
 
