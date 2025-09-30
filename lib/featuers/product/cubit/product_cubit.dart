@@ -23,9 +23,9 @@ class ProductCubit extends Cubit<ProductState> {
 
   /// يُستدعى من PaginationList للمنتجات العامة
   Future<Result> fetchAllProductServies(GetListRequest data) async {
-    final r = await GetAllDrinkUsecase(
+    final r = await GetAllProdcutUsecase(
       ProductRepository(),
-    ).call(params: GetAllDrinkParams(request: data));
+    ).call(params: GetAllProductParams(request: data));
     return r as Result; // upcast للـ RepositoryCallBack في core
   }
 

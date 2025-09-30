@@ -11,8 +11,8 @@ import 'package:eco_dumy/featuers/product/data/usecase/get_products_by_category_
 import '../usecase/get_all_product_usecase.dart';
 
 class ProductRepository extends CoreRepository {
-  Future<Result<List<ProductModel>>> requestAllDrink({
-    required GetAllDrinkParams params,
+  Future<Result<List<ProductModel>>> requestAllProdcut({
+    required GetAllProductParams params,
   }) async {
     final result = await RemoteDataSource.request<List<ProductModel>>(
       withAuthentication: false,

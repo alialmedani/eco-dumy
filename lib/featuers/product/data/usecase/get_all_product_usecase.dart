@@ -6,22 +6,22 @@ import '../../../../core/results/result.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../repository/product_repository.dart';
 
-class GetAllDrinkParams extends BaseParams {
+class GetAllProductParams extends BaseParams {
   final GetListRequest? request;
 
-  GetAllDrinkParams({required this.request});
+  GetAllProductParams({required this.request});
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
      return data;
   }
 }
 
-class GetAllDrinkUsecase extends UseCase<List<ProductModel>, GetAllDrinkParams> {
+class GetAllProdcutUsecase extends UseCase<List<ProductModel>, GetAllProductParams> {
   late final ProductRepository repository;
-  GetAllDrinkUsecase(this.repository);
+  GetAllProdcutUsecase(this.repository);
 
   @override
-  Future<Result<List<ProductModel>>> call({required GetAllDrinkParams params}) {
-    return repository.requestAllDrink(params: params);
+  Future<Result<List<ProductModel>>> call({required GetAllProductParams params}) {
+    return repository.requestAllProdcut(params: params);
   }
 }
