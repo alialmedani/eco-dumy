@@ -104,7 +104,7 @@ Future<void> _loadCategoryThumb(String slug) async {
       String? url;
       if (list.isNotEmpty) {
         final p = list.first;
-        final thumb = p.thumbnail?.toString() ?? '';
+        final thumb = p.thumbnail.toString();
         if (thumb.isNotEmpty) {
           url = thumb;
         } else if (p.images.isNotEmpty) {

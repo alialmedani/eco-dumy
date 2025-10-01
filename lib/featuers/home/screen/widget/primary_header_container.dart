@@ -17,7 +17,7 @@ class PrimaryHeaderContainer extends StatelessWidget {
       child: Container(
         // color: isDark ? ColorsManager.dark : ColorsManager.mainBlue,
         child: SizedBox(
-          height: 400.h,
+          height: 330.h,
           child: Stack(
             children: [
               Positioned(

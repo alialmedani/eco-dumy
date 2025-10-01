@@ -1,5 +1,6 @@
 import 'package:eco_dumy/core/constant/end_points/cashe_helper_constant.dart';
 import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,15 +10,17 @@ import 'package:hive_flutter/hive_flutter.dart';
  
 
 class CacheHelper {
+  // ✅ عرّف المفتاح هنا، مش داخل init()
+  static const String productCartItemsKey = 'product_cart_items_v1';
+
   static late Box<dynamic> box;
   static late Box<dynamic> wishlistBox;
   static late Box<dynamic> cartBox;
   static late Box<dynamic> currentUserBox;
   static late Box<dynamic> settingBox;
 
-  static init() async {
+  static Future<void> init() async {
     await Hive.initFlutter();
-   
     box = await Hive.openBox("default_box");
     wishlistBox = await Hive.openBox("model_box");
     cartBox = await Hive.openBox("cart_box");
@@ -25,6 +28,71 @@ class CacheHelper {
     settingBox = await Hive.openBox("setting_box");
   }
 
+  // ------------------- سلة المنتجات (ProductCartItem) -------------------
+
+  static List<ProductCartItem> getProductCartItems() {
+    try {
+      if (!cartBox.containsKey(productCartItemsKey)) return [];
+      final List<dynamic> raw = cartBox.get(productCartItemsKey) ?? [];
+      return raw
+          .map((e) => ProductCartItem.fromJson(Map<String, dynamic>.from(e)))
+          .toList();
+    } catch (_) {
+      cartBox.delete(productCartItemsKey);
+      return [];
+    }
+  }
+
+  static Future<void> _saveProductCart(List<ProductCartItem> items) async {
+    final data = items.map((e) => e.toJson()).toList();
+    await cartBox.put(productCartItemsKey, data);
+  }
+
+  static Future<void> addProductToCart(ProductCartItem item) async {
+    final items = getProductCartItems();
+    final i = items.indexWhere((e) => e.id == item.id);
+    if (i == -1) {
+      items.add(item);
+    } else {
+      items[i] = items[i].copyWith(quantity: items[i].quantity + item.quantity);
+    }
+    await _saveProductCart(items);
+  }
+
+  static Future<void> removeProductFromCart(int id) async {
+    final items = getProductCartItems();
+    items.removeWhere((e) => e.id == id);
+    await _saveProductCart(items);
+  }
+
+  static Future<void> updateProductQuantity(int id, int newQty) async {
+    final items = getProductCartItems();
+    final i = items.indexWhere((e) => e.id == id);
+    if (i != -1) {
+      if (newQty <= 0) {
+        items.removeAt(i);
+      } else {
+        items[i] = items[i].copyWith(quantity: newQty);
+      }
+      await _saveProductCart(items);
+    }
+  }
+
+  static Future<void> clearProductCart() async {
+    await cartBox.delete(productCartItemsKey);
+  }
+
+  static int get productCartItemCount {
+    final items = getProductCartItems();
+    return items.fold<int>(0, (sum, e) => sum + e.quantity);
+  }
+
+  static double get productCartTotalPrice {
+    final items = getProductCartItems();
+    return items.fold<double>(0.0, (sum, e) => sum + (e.price * e.quantity));
+  }
+
+  // ------------------- بقية دوالك كما هي -------------------
   // static Future<void> setCurrentUserInfo(CurrentUserModel? value) async {
   //   if (value != null) {
   //     await currentUserBox.put('user_info', value);

@@ -188,8 +188,9 @@ class ProductsByCategoryPage extends StatelessWidget {
         .where((p) => (p.images?.isNotEmpty ?? false))
         .take(5)
         .toList();
-    if (items.isEmpty)
+    if (items.isEmpty) {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
+    }
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -206,7 +207,7 @@ class ProductsByCategoryPage extends StatelessWidget {
             autoPlayCurve: Curves.fastOutSlowIn,
           ),
           items: items.map((p) {
-            final first = p.images!.first?.toString() ?? '';
+            final first = p.images.first.toString();
             return Builder(
               builder: (context) => InkWell(
                 borderRadius: BorderRadius.circular(14),

@@ -6,6 +6,8 @@ import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
 import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_state.dart';
+import 'package:eco_dumy/featuers/home/screen/widget/promo_slider.dart';
+import 'package:eco_dumy/featuers/product/screen/category/categories_pagination_bar.dart';
 import 'package:eco_dumy/featuers/product/screen/product_grid.dart';
 import 'package:eco_dumy/featuers/home/screen/widget/home_app_bar.dart';
 import 'package:eco_dumy/featuers/home/screen/widget/primary_header_container.dart';
@@ -14,6 +16,7 @@ import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final ScrollController _scrollController = ScrollController();
@@ -60,20 +63,15 @@ class HomeScreen extends StatelessWidget {
           return context.read<ProductCubit>().fetchAllProductServies(data);
         },
         listBuilder: (apiList) {
-
-          
           return SingleChildScrollView(
             controller: _scrollController,
             child: Column(
-
-              
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PrimaryHeaderContainer(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       const HomeAppBar(),
                       const SizedBox(height: AppPaddingSize.padding_32),
 
@@ -134,6 +132,8 @@ class HomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: AppPaddingSize.padding_16),
                             // const CategoriesBlocBuilder(),
+                            const CategoriesPaginationBar(),
+
                             const SizedBox(height: AppPaddingSize.padding_16),
                             SectionHeading(
                               title: "New_Releases".tr(),
@@ -146,13 +146,12 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-// 🔽 هذا هو نفس جزء الكود عندك داخل listBuilder
                 Padding(
                   padding: const EdgeInsets.all(AppPaddingSize.padding_24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // const PromoSlider(),
+                      const PromoSlider(),
                       const SizedBox(height: AppPaddingSize.padding_16),
                       SectionHeading(
                         title: "Best_Selling_Product".tr(),
@@ -174,7 +173,6 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ],
             ),
           );

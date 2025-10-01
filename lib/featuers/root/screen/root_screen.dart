@@ -1,4 +1,5 @@
 import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
+import 'package:eco_dumy/featuers/order/screen/order_screen.dart';
 import 'package:eco_dumy/featuers/product/screen/category/all_categories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class RootScreen extends StatelessWidget {
   // بدّل الشاشات حسب مشروعك
   final List<Widget> screens = [
     HomeScreen(),
-    const Placeholder(),
+    const OrderScreen(),
     const Placeholder(),
 
     AllCategoriesScreen(),
