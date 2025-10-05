@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartItemCard extends StatelessWidget {
   final ProductCartItem product;
- 
+
   // للسلة
   final VoidCallback? onIncrease;
   final VoidCallback? onDecrease;
@@ -29,12 +29,14 @@ class CartItemCard extends StatelessWidget {
     this.onDecrease,
     this.trailingIcon = Icons.delete_outline, // بالسلة delete
     this.trailingColor = Colors.redAccent,
-    this.showQuantityControls = true,   // بالمفضلة نخليه false
+    this.showQuantityControls = true, // بالمفضلة نخليه false
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.darka, // اللون الجديد
+
       elevation: 7,
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
@@ -93,7 +95,7 @@ class CartItemCard extends StatelessWidget {
               children: [
                 const SizedBox(height: AppPaddingSize.padding_12),
                 Text(
-                  product.product.title,
+                  product.product.title,style: TextStyle(color: AppColors.lighta),
                   // style: TextStyles(context).font18DarkBlueSemiBold(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -119,8 +121,7 @@ class CartItemCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppPaddingSize.padding_6),
                 Text(
-                  '${  product.product.price 
-} \$ × ${product.quantity}',
+                  '${product.product.price} \$ × ${product.quantity}',style: TextStyle(color: AppColors.lighta), 
                   // style: TextStyles(context).font15DarkBlueMedium(context),
                 ),
                 const SizedBox(height: AppPaddingSize.padding_6),
@@ -128,15 +129,15 @@ class CartItemCard extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: onDecrease,
-                      icon: const Icon(Icons.remove),
+                      icon: const Icon(Icons.remove,color: AppColors.lighta ,),
                     ),
                     Text(
                       '${product.quantity}',
-                      style: TextStyle(fontSize: 16.sp),
+                      style: TextStyle(fontSize: 16.sp,color: AppColors.lighta),
                     ),
                     IconButton(
                       onPressed: onIncrease,
-                      icon: const Icon(Icons.add),
+                      icon: const Icon(Icons.add,color: AppColors.lighta ,),
                     ),
                   ],
                 ),
@@ -144,76 +145,6 @@ class CartItemCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _info(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-            product.product.title,
-           maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-            product.product 
-.price.toStringAsFixed(2),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.white70,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        if (showQuantityControls) ...[
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              _qtyBtn(
-                Icons.remove_rounded,
-                onDecrease,
-                const Color(0xFF151922),
-                Colors.white,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                '${product.quantity}',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 12),
-              _qtyBtn(
-                Icons.add_rounded,
-                onIncrease,
-                const Color(0xFF2563EB),
-                Colors.white,
-              ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _qtyBtn(IconData icon, VoidCallback? onTap, Color bg, Color fg) {
-    return Material(
-      color: bg,
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: onTap, // ممكن يكون null بالمفضلة
-        borderRadius: BorderRadius.circular(10),
-        child: SizedBox(
-          width: 36,
-          height: 36,
-          child: Center(child: Icon(icon, size: 20, color: fg)),
-        ),
       ),
     );
   }

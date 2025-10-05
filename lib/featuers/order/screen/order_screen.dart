@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
+import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/core/results/result.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
 import 'package:eco_dumy/featuers/cart/cubit/cart_cubit.dart';
@@ -10,6 +11,7 @@ import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
 import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -20,15 +22,31 @@ class OrderScreen extends StatelessWidget {
     final cartCubit = context.read<CartCubit>();
 
     return Scaffold(
+      backgroundColor: AppColors.darka,
+
       appBar: AppBar(
+        backgroundColor: AppColors.darka,
+
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset('assets/svgs/logo_svg.svg'),
+            SvgPicture.asset(
+              'assets/svgs/logo_svg.svg',
+              width: AppPaddingSize.padding_40,
+              height: AppPaddingSize.padding_40,
+            ),
             const SizedBox(width: 8),
-            Text("Your_Cart".tr()),
+            Text(
+              "Your_Cart".tr(),
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                // color: isDark ? ColorsManager.light : ColorsManager.darkBlue,
+                color: AppColors.lighta,
+              ),
+            ),
           ],
         ),
       ),
@@ -82,7 +100,8 @@ class OrderScreen extends StatelessWidget {
                       key: ValueKey(item.product.id),
                       direction: DismissDirection.endToStart,
                       confirmDismiss: (_) async {
-                        final ok = await showDialog<bool>(
+                        final ok =
+                            await showDialog<bool>(
                               context: context,
                               builder: (ctx) => AlertDialog(
                                 title: Text("delete".tr()),
@@ -143,7 +162,8 @@ class OrderScreen extends StatelessWidget {
                           trailingIcon: Icons.delete_outline,
                           trailingColor: Colors.redAccent,
                           onTrailingPressed: () async {
-                            final ok = await showDialog<bool>(
+                            final ok =
+                                await showDialog<bool>(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
                                     title: Text("delete".tr()),
@@ -187,16 +207,39 @@ class OrderScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(16),
-                child: Row(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  // color: dark ? ColorsManager.dark : ColorsManager.light,
+                  color: AppColors.darka,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20.r),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+
                   children: [
-                    Text('${"Total".tr()}: ${total.toStringAsFixed(2)}'),
-                    const Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        /* Go to checkout */
-                      },
-                      child: Text("Checkout".tr()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                      children: [
+                        Text(
+                          '${"Total Payment".tr()}: ${total.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            // color: isDark ? ColorsManager.light : ColorsManager.darkBlue,
+                            color: AppColors.lighta,
+                          ),
+                        ),
+                        const Spacer(),
+                        ElevatedButton(
+                          onPressed: () {
+                            /* Go to checkout */
+                          },
+                          child: Text("Checkout".tr()),
+                        ),
+                      ],
                     ),
                   ],
                 ),
