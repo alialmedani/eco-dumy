@@ -129,7 +129,9 @@ class ProductListViewItem extends StatelessWidget {
                     top: 7,
                     child: RoundedContainar(
                       radius: AppPaddingSize.padding_8,
-                      backGroundColor: AppColors.secondarya.withValues(alpha:  0.8),
+                      backGroundColor: AppColors.secondarya.withValues(
+                        alpha: 0.8,
+                      ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppPaddingSize.padding_8,
                         vertical: AppPaddingSize.padding_4,

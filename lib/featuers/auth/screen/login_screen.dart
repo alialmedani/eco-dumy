@@ -3,19 +3,16 @@ import 'package:eco_dumy/core/boilerplate/create_model/widgets/create_model.dart
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
-import 'package:eco_dumy/core/constant/end_points/cashe_helper_constant.dart';
 import 'package:eco_dumy/core/constant/text_styles/app_text_style.dart';
 import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
-import 'package:eco_dumy/core/ui/screens/splash_screen.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
- import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
-  
- import 'package:flutter/material.dart';
+import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
- 
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -109,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: AppPaddingSize.padding_8),
                     Text(
-                   "   'login_welcome_back'.tr()",
+                      "   'login_welcome_back'.tr()",
                       textAlign: TextAlign.center,
                       style: AppTextStyle.getRegularStyle(
                         fontSize: AppFontSize.size_14,
@@ -129,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         LengthLimitingTextInputFormatter(30),
                       ],
                       decoration: _deco(
-                    "    'login_phone_or_username'.tr()",
+                        "    'login_phone_or_username'.tr()",
                         prefix: Icons.person_outline,
                       ),
                       onChanged: (_) =>
@@ -153,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passCtl,
                       obscureText: _obscure,
                       decoration: _deco(
-                       " 'login_password'.tr()",
+                        " 'login_password'.tr()",
                         prefix: Icons.lock_outline,
                         suffix: IconButton(
                           icon: Icon(
@@ -166,7 +163,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       onChanged: (_) =>
                           context.read<AuthCubit>().loginParams.password =
                               _passCtl.text.trim(),
-                      
                     ),
 
                     const SizedBox(height: AppPaddingSize.padding_16),
@@ -186,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onSuccess: (LoginModel res) async {
                           CacheHelper.setToken(res.accessToken);
                           CacheHelper.setRefreshToken(res.refreshToken);
-                            CacheHelper.setUserInfo(res);
+                          CacheHelper.setUserInfo(res);
                           Navigation.push(HomeScreen());
                         },
                         child: ElevatedButton(
@@ -201,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: Text(
-                           " 'login_sign_in'.tr()",
+                            " 'login_sign_in'.tr()",
                             style: AppTextStyle.getBoldStyle(
                               fontSize: AppFontSize.size_16,
                               color: AppColors.white,
@@ -215,11 +211,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) =>   HomeScreen(),
-                          ),
-                        );
+                        Navigator.of(
+                          context,
+                        ).push(MaterialPageRoute(builder: (_) => HomeScreen()));
                       },
                       child: Text(
                         'login_no_account_create'.tr(),

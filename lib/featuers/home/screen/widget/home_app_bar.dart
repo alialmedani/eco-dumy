@@ -2,10 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
-import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
 import 'package:eco_dumy/featuers/home/screen/widget/appbarr.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});

@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
-import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_state.dart';
 import 'package:eco_dumy/featuers/home/screen/widget/circular_container.dart';

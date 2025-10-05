@@ -3,9 +3,7 @@ import 'package:eco_dumy/core/boilerplate/pagination/widgets/pagination_list.dar
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
-import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
-import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
-import 'package:eco_dumy/featuers/home/cubit/home_state.dart';
+
 import 'package:eco_dumy/featuers/home/screen/widget/promo_slider.dart';
 import 'package:eco_dumy/featuers/product/screen/category/categories_pagination_bar.dart';
 import 'package:eco_dumy/featuers/product/screen/product_grid.dart';
@@ -131,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {},
                             ),
                             const SizedBox(height: AppPaddingSize.padding_16),
-                             const CategoriesPaginationBar(),
+                            const CategoriesPaginationBar(),
 
                             const SizedBox(height: AppPaddingSize.padding_16),
                             SectionHeading(

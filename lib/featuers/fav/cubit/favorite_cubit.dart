@@ -4,8 +4,7 @@ import 'package:eco_dumy/core/boilerplate/pagination/cubits/pagination_cubit.dar
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/featuers/fav/cubit/favorite_state.dart';
 import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
-import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
-
+ 
 class FavoriteCubit extends Cubit<FavoriteState> {
   FavoriteCubit() : super(FavoriteInitial());
   PaginationCubit? favouritetCubit;

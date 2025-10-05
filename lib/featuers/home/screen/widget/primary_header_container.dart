@@ -11,8 +11,7 @@ class PrimaryHeaderContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = Theme.of(context).brightness == Brightness.dark;
-
+ 
     return CurvetEdgetWidget(
       child: Container(
         // color: isDark ? ColorsManager.dark : ColorsManager.mainBlue,
