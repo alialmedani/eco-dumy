@@ -1,14 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
+import 'package:eco_dumy/featuers/cart/cubit/cart_cubit.dart';
+import 'package:eco_dumy/featuers/fav/cubit/favorite_cubit.dart';
+import 'package:eco_dumy/featuers/fav/cubit/favorite_state.dart';
+import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:eco_dumy/featuers/product/screen/widgets/buynow_button_widget.dart';
 import 'package:eco_dumy/featuers/product/screen/widgets/image_zoom_page.dart';
 import 'package:eco_dumy/featuers/product/screen/widgets/infoRow_widget.dart';
- import 'package:eco_dumy/featuers/product/screen/widgets/product_description_widget.dart';
+import 'package:eco_dumy/featuers/product/screen/widgets/product_description_widget.dart';
 import 'package:eco_dumy/featuers/product/screen/widgets/product_title_price_widget.dart';
 import 'package:eco_dumy/featuers/product/screen/widgets/product_image_widget.dart';
+import 'package:eco_dumy/featuers/product/screen/widgets/w.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DetailsPage extends StatelessWidget {
@@ -38,54 +44,13 @@ class DetailsPage extends StatelessWidget {
                     child: Icon(
                       Icons.arrow_back_ios,
                       size: 22,
-                      // color: dark ? ColorsManager.light : ColorsManager.gray,
                       color: AppColors.lighta,
                     ),
                   ),
-                  // BlocBuilder<FavouriteCubit, FavouriteState>(
-                  //   builder: (context, state) {
-                  //     final isFavourite = state.favourites.any(
-                  //       (p) => p.id == product.id,
-                  //     );
-                  //     return AnimatedContainer(
-                  //       duration: const Duration(milliseconds: 300),
-                  //       decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(100),
-                  //         color: dark
-                  //             ? ColorsManager.black.withOpacity(0.9)
-                  //             : ColorsManager.white.withOpacity(0.9),
-                  //       ),
-                  //       child: IconButton(
-                  //         icon: Icon(
-                  //           isFavourite
-                  //               ? Icons.favorite
-                  //               : Icons.favorite_border,
-                  //           color: Colors.red,
-                  //           size: TSizes.iconLg,
-                  //         ),
-                  //         onPressed: () {
-                  //           final favCubit = context.read<FavouriteCubit>();
-                  //           final alreadyFav = favCubit.state.favourites.any(
-                  //             (p) => p.id == product.id,
-                  //           );
-                  //           favCubit.addOrRemoveFavourite(product);
+                  FavIconOnly(product: product, dark: true,),
 
-                  //           ScaffoldMessenger.of(context).showSnackBar(
-                  //             SnackBar(
-                  //               backgroundColor: ColorsManager.kPrimaryColor2,
-                  //               duration: const Duration(milliseconds: 600),
-                  //               content: Text(
-                  //                 alreadyFav
-                  //                     ? '${product.title} ${S.current.removed_from_Favourite}'
-                  //                     : '${product.title} ${S.current.added_to_Favourite}',
-                  //               ),
-                  //             ),
-                  //           );
-                  //         },
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
+                  // ❤️ زرّ المفضلة مع FavoriteCubit
+                
                 ],
               ),
 
@@ -253,6 +218,10 @@ class DetailsPage extends StatelessWidget {
         child: BuyNowButtonWidget(
           onPressed: () {
             // context.read<OrderCubit>().addProduct(product);
+               final cartItem = ProductCartItem(product: product, quantity: 1);
+
+            // استدعاء CartCubit لإضافة المنتج
+            context.read<CartCubit>().addToCart(cartItem);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: const Duration(milliseconds: 600),

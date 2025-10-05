@@ -1,14 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:eco_dumy/featuers/cart/cubit/cart_cubit.dart';
 import 'package:eco_dumy/check_update.dart';
+
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/fav/cubit/favorite_cubit.dart';
 import 'package:eco_dumy/featuers/order/cubit/order_cubit.dart';
 import 'package:eco_dumy/featuers/product/screen/category/all_categories_screen.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
 import 'package:eco_dumy/featuers/home/cubit/home_cubit.dart';
 import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
 import 'package:eco_dumy/featuers/root/cubit/root_cubit.dart';
+import 'package:eco_dumy/featuers/root/screen/root_screen.dart';
 import 'package:eco_dumy/firebase_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +65,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => HomeCubit()),
         BlocProvider(create: (context) => ProductCubit()),
         BlocProvider(create: (context) => OrderCubit()),
+        BlocProvider(create: (context) => CartCubit()),
+        BlocProvider(create: (context) => FavoriteCubit()),
       ],
       child: ScreenUtilInit(
         minTextAdapt: true,
@@ -75,8 +81,8 @@ class MyApp extends StatelessWidget {
             navigatorKey: Keys.navigatorKey,
             title: 'Task App',
             theme: appThemeData[AppTheme.light],
-            home: CacheHelper.token != null ? SplashSscreen1() : LoginScreen(),
-            // home: AllCategoriesScreen(),
+            // home: CacheHelper.token != null ? SplashSscreen1() : LoginScreen(),
+            home: RootScreen(),
           );
         },
       ),

@@ -1,4 +1,5 @@
 // lib/featuers/home/new/screen/tad/widget/product_grid.dart
+import 'package:eco_dumy/core/constant/app_responsive/responsive.dart';
 import 'package:eco_dumy/featuers/product/screen/product_list_view_item.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
@@ -17,8 +18,8 @@ class ProductGrid extends StatelessWidget {
 
         shrinkWrap: true, 
          itemCount: products.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+        gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: Responsive.isMobile(context) ? 2 : 3,
           mainAxisExtent: 320,
           crossAxisSpacing: 16,
           mainAxisSpacing: 16,

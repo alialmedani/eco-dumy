@@ -1,16 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
+import 'package:eco_dumy/featuers/cart/cubit/cart_cubit.dart';
 import 'package:eco_dumy/core/boilerplate/pagination/models/get_list_request.dart';
 import 'package:eco_dumy/core/boilerplate/pagination/widgets/pagination_list.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/results/result.dart';
-import 'package:eco_dumy/featuers/order/cubit/order_cubit.dart';
 import 'package:eco_dumy/featuers/order/data/model/cart_item_card.dart';
 import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
- import 'package:flutter/material.dart';
+ import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-// تقسيم محلي للسلة حسب skip/take
+// ✅ دالة لتقسيم السلة محلياً (pagination)
 Future<Result<List<ProductCartItem>>> _paginateLocalCart({
   required List<ProductCartItem> full,
   required GetListRequest req,
@@ -19,22 +21,45 @@ Future<Result<List<ProductCartItem>>> _paginateLocalCart({
   final skip = (req.skip ?? 0).clamp(0, full.length);
   final end = (skip + take) > full.length ? full.length : (skip + take);
   final slice = full.sublist(skip, end);
-  return Result<List<ProductCartItem>>(
-    data: slice,
-  ); // ما في success بواجهة Result تبعك
+  return Result<List<ProductCartItem>>(data: slice);
 }
 
-class OrderScreen extends StatelessWidget {
+class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
 
   @override
+  State<OrderScreen> createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CartCubit>().loadCart();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrderCubit, OrderState>(
-      buildWhen: (p, c) => c is OrderChanged || p is OrderInitial,
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
-        final cubit = context.read<OrderCubit>();
-        final cart = cubit.cart;
-        final total = cubit.totalPrice;
+        if (state is CartLoading || state is CartInitial) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (state is CartError) {
+          return Scaffold(body: Center(child: Text(state.message)));
+        }
+
+        final loaded = state as CartLoaded;
+        final items = loaded.cartItems;
+
+        // ✅ عدّل حساب المجموع ليستعمل item.product.price
+        final total = items.fold<double>(
+          0.0,
+          (sum, e) => sum + (e.product.price * e.quantity),
+        );
 
         return Scaffold(
           appBar: AppBar(
@@ -50,7 +75,7 @@ class OrderScreen extends StatelessWidget {
             ),
           ),
 
-          body: cart.isEmpty
+          body: items.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -66,13 +91,13 @@ class OrderScreen extends StatelessWidget {
                   ),
                 )
               : PaginationList<ProductCartItem>(
+                  key: ValueKey('cart-${loaded.totalItems}'),
                   withRefresh: true,
                   physics: const BouncingScrollPhysics(),
                   onCubitCreated: (_) {},
                   repositoryCallBack: (req) {
                     if (req.skip == 0) req.take = 10;
-                    // مهم: استعمل snapshot الحالي من السلة (رح يُعاد بناء الـWidget عند أي تغيير)
-                    return _paginateLocalCart(full: cubit.cart, req: req);
+                    return _paginateLocalCart(full: items, req: req);
                   },
                   noDataWidget: const SizedBox.shrink(),
                   listBuilder: (pageList) {
@@ -82,80 +107,81 @@ class OrderScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final item = pageList[index];
 
-                        return TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0, end: 1),
-                          duration: Duration(milliseconds: 350 + index * 100),
-                          builder: (context, value, child) => Opacity(
-                            opacity: value,
-                            child: Transform.translate(
-                              offset: Offset(0, 25 * (1 - value)),
-                              child: child,
+                        return Dismissible(
+                          key: ValueKey(item.product.id),
+                          direction: DismissDirection.endToStart,
+                          confirmDismiss: (_) async {
+                            final ok =
+                                await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text("delete".tr()),
+                                    content: Text(
+                                      '${"are_you_sure_to_delete".tr()} "${item.product.title}"?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, false),
+                                        child: Text("cancel".tr()),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, true),
+                                        child: Text("confirm".tr()),
+                                      ),
+                                    ],
+                                  ),
+                                ) ??
+                                false;
+                            return ok;
+                          },
+                          onDismissed: (_) async {
+                            await context.read<CartCubit>().removeProduct(item);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  '${item.product.title} ${"removed_from_cart".tr()}',
+                                ),
+                                backgroundColor: AppColors.kPrimaryColor2a,
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          background: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            alignment: Alignment.centerRight,
+                            color: Colors.red,
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
                             ),
                           ),
-                          child: Dismissible(
-                            key: ValueKey(item.id),
-                            direction: DismissDirection.endToStart,
-                            confirmDismiss: (_) async {
-                              // استخدم حوار التأكيد الخاص فيك إن موجود
-                              // أو رجّع true مباشرة إذا ما بدك حوار
-                              return await showDialog<bool>(
-                                    context: context,
-                                    builder: (ctx) => AlertDialog(
-                                      title: Text("delete".tr()),
-                                      content: Text(
-                                        '${"are_you_sure_to_delete".tr()} "${item.title}"?',
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(ctx, false),
-                                          child: Text("cancel".tr()),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(ctx, true),
-                                          child: Text("confirm".tr()),
-                                        ),
-                                      ],
-                                    ),
-                                  ) ??
-                                  false;
-                            },
-                            onDismissed: (_) async {
-                              await cubit.removeProduct(item);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    '${item.title} ${"removed_from_cart".tr()}',
-                                  ),
-                                  backgroundColor: AppColors.kPrimaryColor2a,
-                                  duration: const Duration(seconds: 2),
-                                ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigation.push(
+                                DetailsPage(product: item.product),
                               );
                             },
-                            background: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              alignment: Alignment.centerRight,
-                              color: Colors.red,
-                              child: const Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
-                            ),
                             child: CartItemCard(
                               product: item,
-                              onIncrease: () => cubit.increaseQuantity(item),
-                              onDecrease: () => cubit.decreaseQuantity(item),
-                              onRemove: () async {
+                              showQuantityControls: true,
+                              onIncrease: () => context
+                                  .read<CartCubit>()
+                                  .increaseQuantity(item),
+                              onDecrease: () => context
+                                  .read<CartCubit>()
+                                  .decreaseQuantity(item),
+                              trailingIcon: Icons.delete_outline,
+                              trailingColor: Colors.redAccent,
+                              onTrailingPressed: () async {
                                 final ok =
                                     await showDialog<bool>(
                                       context: context,
                                       builder: (ctx) => AlertDialog(
                                         title: Text("delete".tr()),
                                         content: Text(
-                                          '${"are_you_sure_to_delete".tr()} "${item.title}"?',
+                                          '${"are_you_sure_to_delete".tr()} "${item.product.title}"?',
                                         ),
                                         actions: [
                                           TextButton(
@@ -174,7 +200,19 @@ class OrderScreen extends StatelessWidget {
                                     false;
 
                                 if (ok) {
-                                  await cubit.removeProduct(item);
+                                  await context.read<CartCubit>().removeProduct(
+                                    item,
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${item.product.title} ${"removed_from_cart".tr()}',
+                                      ),
+                                      backgroundColor:
+                                          AppColors.kPrimaryColor2a,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
                                 }
                               },
                             ),
@@ -185,8 +223,21 @@ class OrderScreen extends StatelessWidget {
                   },
                 ),
 
-          // زر الدفع / الملخص
-          // bottomNavigationBar: CheckOut(totalPrice: total),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Text('${"Total".tr()}: ${total.toStringAsFixed(2)}'),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    /* Go to checkout */
+                  },
+                  child: Text("Checkout".tr()),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

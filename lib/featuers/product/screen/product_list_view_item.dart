@@ -1,4 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
+import 'package:eco_dumy/featuers/cart/cubit/cart_cubit.dart';
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
@@ -9,6 +11,7 @@ import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class ProductListViewItem extends StatelessWidget {
   final ProductModel? product;
   final int itemIndex;
@@ -67,12 +70,66 @@ class ProductListViewItem extends StatelessWidget {
                     ),
                   ),
                   Positioned(
+                    left: isArabic ? 0 : null,
+                    right: isArabic ? null : 0,
+                    top: 0,
+
+                    // child: BlocBuilder<FavouriteCubit, FavouriteState>(
+                    //   builder: (context, state) {
+                    //     final isFavourite = state.favourites.any(
+                    //       (p) => p.id == product!.id,
+                    //     );
+                    //     return
+                    child: Container(
+                      width: AppPaddingSize.padding_40,
+                      height: AppPaddingSize.padding_40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        // color: dark
+                        //     ? ColorsManager.black.withOpacity(0.9)
+                        //     : ColorsManager.white.withOpacity(0.9),
+                        color: AppColors.darkerGreya.withValues(alpha: 0.9),
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          // isFavourite
+                          //     ? Icons.favorite
+                          //     : Icons.favorite_border,
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: AppPaddingSize.padding_24,
+                        ),
+                        onPressed: () {
+                          //   final favCubit = context.read<FavouriteCubit>();
+                          //   final isFavourite = favCubit.state.favourites.any(
+                          //     (p) => p.id == product!.id,
+                          //   );
+
+                          //   favCubit.addOrRemoveFavourite(product!);
+
+                          //   ScaffoldMessenger.of(context).showSnackBar(
+                          //     SnackBar(
+                          //       backgroundColor: Appc.kPrimaryColor2,
+                          //       duration: const Duration(milliseconds: 600),
+                          //       content: Text(
+                          //         isFavourite
+                          //             ? '${product?.title} ${S.current.removed_from_Favourite}'
+                          //             : '${product?.title} ${S.current.added_to_Favourite}',
+                          //       ),
+                          //     ),
+                          //   );
+                        },
+                      ),
+                    ),
+                  ),
+
+                  Positioned(
                     right: isArabic ? 7 : null,
                     left: isArabic ? null : 7,
                     top: 7,
                     child: RoundedContainar(
                       radius: AppPaddingSize.padding_8,
-                      backGroundColor: AppColors.secondarya.withOpacity(0.8),
+                      backGroundColor: AppColors.secondarya.withValues(alpha:  0.8),
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppPaddingSize.padding_8,
                         vertical: AppPaddingSize.padding_4,
@@ -167,7 +224,7 @@ class ProductListViewItem extends StatelessWidget {
                                 onPressed: () {
                                   // ✅ toCartItem من الإكستنشن – بدها import صحيح
                                   final item = p.toCartItem(qty: 1);
-                                  context.read<OrderCubit>().addProduct(item);
+                                  context.read<CartCubit>().addToCart(item);
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

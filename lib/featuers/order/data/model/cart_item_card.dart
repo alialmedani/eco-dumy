@@ -1,154 +1,220 @@
+// lib/featuers/order/widgets/cart_item_card.dart
+import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
+import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
+import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CartItemCard extends StatelessWidget {
   final ProductCartItem product;
-  final VoidCallback onIncrease;
-  final VoidCallback onDecrease;
-  final VoidCallback onRemove;
+ 
+  // للسلة
+  final VoidCallback? onIncrease;
+  final VoidCallback? onDecrease;
+
+  // زر الإجراء الجانبي (حذف من السلة / إزالة من المفضلة)
+  final IconData trailingIcon;
+  final Color trailingColor;
+  final VoidCallback onTrailingPressed;
+
+  // تحكم مرئي
+  final bool showQuantityControls;
 
   const CartItemCard({
     super.key,
     required this.product,
-    required this.onIncrease,
-    required this.onDecrease,
-    required this.onRemove,
+    required this.onTrailingPressed,
+    this.onIncrease,
+    this.onDecrease,
+    this.trailingIcon = Icons.delete_outline, // بالسلة delete
+    this.trailingColor = Colors.redAccent,
+    this.showQuantityControls = true,   // بالمفضلة نخليه false
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1F2430),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
+    return Card(
+      elevation: 7,
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              color: const Color(0xFF151922),
-              width: 80,
-              height: 80,
-              child: product.thumbnail.isEmpty
-                  ? const Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        color: Colors.white54,
-                        size: 20,
-                      ),
-                    )
-                  : Image.network(
-                      product.thumbnail,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          color: Colors.white54,
-                          size: 20,
-                        ),
-                      ),
-                      loadingBuilder: (ctx, child, prog) => prog == null
-                          ? child
-                          : const Center(
-                              child: SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
-                            ),
-                    ),
-            ),
-          ),
-          const SizedBox(width: 12),
+            borderRadius: BorderRadius.circular(10.r),
 
+            child: Image.network(
+              product.product.thumbnail,
+              width: 80.w,
+              height: 80.h,
+              fit: BoxFit.cover,
+            ),
+
+            // Container(
+            //   color: const Color(0xFF151922),
+            //   width: 80,
+            //   height: 80,
+            //   child: product.thumbnail.isEmpty
+            //       ? const Center(
+            //           child: Icon(
+            //             Icons.image_not_supported,
+            //             color: Colors.white54,
+            //             size: 20,
+            //           ),
+            //         )
+            //       : Image.network(
+            //           product.thumbnail,
+            //           fit: BoxFit.cover,
+            //           errorBuilder: (_, __, ___) => const Center(
+            //             child: Icon(
+            //               Icons.image_not_supported,
+            //               color: Colors.white54,
+            //               size: 20,
+            //             ),
+            //           ),
+            //           loadingBuilder: (ctx, child, prog) => prog == null
+            //               ? child
+            //               : const Center(
+            //                   child: SizedBox(
+            //                     width: 16,
+            //                     height: 16,
+            //                     child: CircularProgressIndicator(strokeWidth: 2),
+            //                   ),
+            //                 ),
+            //         ),
+            // ),
+          ),
+          SizedBox(width: 8.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: AppPaddingSize.padding_12),
                 Text(
-                  product.title,
-                  maxLines: 2,
+                  product.product.title,
+                  // style: TextStyles(context).font18DarkBlueSemiBold(context),
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  product.price.toStringAsFixed(2),
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppPaddingSize.padding_6),
                 Row(
                   children: [
-                    _qtyBtn(
-                      Icons.remove_rounded,
-                      onDecrease,
-                      const Color(0xFF151922),
-                      Colors.white,
+                    // Text(
+                    //   product.brand ?? '',
+                    //   style: TextStyles(
+                    //     context,
+                    //   ).font17kTextColorSemiBold(context),
+                    //   maxLines: 1,
+                    //   overflow: TextOverflow.ellipsis,
+                    // ),
+                    const SizedBox(width: AppPaddingSize.padding_4),
+                    const Icon(
+                      Icons.star,
+                      size: AppPaddingSize.padding_16,
+                      color: AppColors.mainBluea,
                     ),
-                    const SizedBox(width: 12),
+                  ],
+                ),
+                const SizedBox(height: AppPaddingSize.padding_6),
+                Text(
+                  '${  product.product.price 
+} \$ × ${product.quantity}',
+                  // style: TextStyles(context).font15DarkBlueMedium(context),
+                ),
+                const SizedBox(height: AppPaddingSize.padding_6),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: onDecrease,
+                      icon: const Icon(Icons.remove),
+                    ),
                     Text(
                       '${product.quantity}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
-                    const SizedBox(width: 12),
-                    _qtyBtn(
-                      Icons.add_rounded,
-                      onIncrease,
-                      const Color(0xFF2563EB),
-                      Colors.white,
+                    IconButton(
+                      onPressed: onIncrease,
+                      icon: const Icon(Icons.add),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-
-          IconButton(
-            tooltip: 'Remove',
-            onPressed: onRemove,
-            icon: const Icon(Icons.delete_outline),
-            color: Colors.redAccent,
-          ),
         ],
       ),
     );
   }
 
-  Widget _qtyBtn(IconData icon, VoidCallback onTap, Color bg, Color fg) {
+  Widget _info(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+            product.product.title,
+           maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+            product.product 
+.price.toStringAsFixed(2),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.white70,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        if (showQuantityControls) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              _qtyBtn(
+                Icons.remove_rounded,
+                onDecrease,
+                const Color(0xFF151922),
+                Colors.white,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                '${product.quantity}',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 12),
+              _qtyBtn(
+                Icons.add_rounded,
+                onIncrease,
+                const Color(0xFF2563EB),
+                Colors.white,
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _qtyBtn(IconData icon, VoidCallback? onTap, Color bg, Color fg) {
     return Material(
       color: bg,
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
-        onTap: onTap,
+        onTap: onTap, // ممكن يكون null بالمفضلة
         borderRadius: BorderRadius.circular(10),
-        child: const SizedBox(
+        child: SizedBox(
           width: 36,
           height: 36,
-          // رح نبدّل الـ child مباشرة بدون copyWith
+          child: Center(child: Icon(icon, size: 20, color: fg)),
         ),
       ),
     );
   }
-
 }

@@ -4,14 +4,12 @@ import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
- 
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
- 
 
 class CacheHelper {
   // ✅ عرّف المفتاح هنا، مش داخل init()
-  static const String productCartItemsKey = 'product_cart_items_v1';
 
   static late Box<dynamic> box;
   static late Box<dynamic> wishlistBox;
@@ -28,70 +26,136 @@ class CacheHelper {
     settingBox = await Hive.openBox("setting_box");
   }
 
-  // ------------------- سلة المنتجات (ProductCartItem) -------------------
+  // Cart operations
 
-  static List<ProductCartItem> getProductCartItems() {
+  // إضافة عنصر للسلة
+  static Future<void> addToCart(ProductCartItem cartItem) async {
+    List<ProductCartItem> currentCart = getCartItems();
+
+    int existingIndex = currentCart.indexWhere(
+      (item) => item.product.id == cartItem.product.id,
+    );
+
+    if (existingIndex != -1) {
+      currentCart[existingIndex] = currentCart[existingIndex].copyWith(
+        quantity: currentCart[existingIndex].quantity + cartItem.quantity,
+      );
+    } else {
+      currentCart.add(cartItem);
+    }
+
+    await _saveCartItems(currentCart);
+  }
+
+  // إزالة عنصر من السلة
+  static Future<void> removeFromCart(ProductCartItem cartItem) async {
+    List<ProductCartItem> currentCart = getCartItems();
+    currentCart.removeWhere((item) => item.product.id == cartItem.product.id);
+    await _saveCartItems(currentCart);
+  }
+
+  static Future<void> updateCartItemQuantity(
+    ProductCartItem cartItem,
+    int newQty,
+  ) async {
+    List<ProductCartItem> currentCart = getCartItems();
+    int index = currentCart.indexWhere(
+      (item) => item.product.id == cartItem.product.id,
+    );
+
+    if (index != -1) {
+      if (newQty <= 0) {
+        currentCart.removeAt(index);
+      } else {
+        currentCart[index] = currentCart[index].copyWith(quantity: newQty);
+      }
+      await _saveCartItems(currentCart);
+    }
+  }
+
+
+  static List<ProductCartItem> getCartItems() {
     try {
-      if (!cartBox.containsKey(productCartItemsKey)) return [];
-      final List<dynamic> raw = cartBox.get(productCartItemsKey) ?? [];
-      return raw
-          .map((e) => ProductCartItem.fromJson(Map<String, dynamic>.from(e)))
+      if (!cartBox.containsKey(cartItems)) return [];
+
+      List<dynamic> cartData = cartBox.get(cartItems) ?? [];
+      return cartData
+          .map(
+            (item) => ProductCartItem.fromJson(Map<String, dynamic>.from(item)),
+          )
           .toList();
-    } catch (_) {
-      cartBox.delete(productCartItemsKey);
+    } catch (e) {
+      // If there's any error loading cart items, clear the cache and return empty list
+      cartBox.delete(cartItems);
       return [];
     }
   }
 
-  static Future<void> _saveProductCart(List<ProductCartItem> items) async {
-    final data = items.map((e) => e.toJson()).toList();
-    await cartBox.put(productCartItemsKey, data);
+  static Future<void> clearCart() async {
+    await cartBox.delete(cartItems);
+  }
+//favourite
+// مفتاح ثابت للمفضّلة
+  static const String favoriteIdsKey = 'favorite_ids_v1';
+
+  // جلب Set<int> من المفضّلة
+  static Future<Set<int>> getFavoriteIds() async {
+    // تأكد إن الصناديق مفتوحة (init() لازم يكون منادي عليه بالـ main)
+    final List<dynamic> raw =
+        box.get(favoriteIdsKey, defaultValue: <dynamic>[]) as List<dynamic>;
+    return raw.map((e) => (e as num).toInt()).toSet();
   }
 
-  static Future<void> addProductToCart(ProductCartItem item) async {
-    final items = getProductCartItems();
-    final i = items.indexWhere((e) => e.id == item.id);
+  // حفظ Set<int> بالمفضّلة
+  static Future<void> saveFavoriteIds(Set<int> ids) async {
+    await box.put(favoriteIdsKey, ids.toList());
+  }
+
+// في CacheHelper
+  static Future<void> toggleFavorite(ProductModel p) async {
+    // خزّن/اقرأ كماب بدل object لو ما عندك Hive adapters
+    final list = getFavorites();
+    final i = list.indexWhere((e) => e.id == p.id);
     if (i == -1) {
-      items.add(item);
+      list.add(p);
     } else {
-      items[i] = items[i].copyWith(quantity: items[i].quantity + item.quantity);
+      list.removeAt(i);
     }
-    await _saveProductCart(items);
+    await _saveFavorites(list);
   }
 
-  static Future<void> removeProductFromCart(int id) async {
-    final items = getProductCartItems();
-    items.removeWhere((e) => e.id == id);
-    await _saveProductCart(items);
+  static List<ProductModel> getFavorites() {
+    if (!wishlistBox.containsKey('favorites')) return [];
+    final raw = (wishlistBox.get('favorites') as List?) ?? [];
+    return raw
+        .map((e) => ProductModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
   }
 
-  static Future<void> updateProductQuantity(int id, int newQty) async {
-    final items = getProductCartItems();
-    final i = items.indexWhere((e) => e.id == id);
-    if (i != -1) {
-      if (newQty <= 0) {
-        items.removeAt(i);
-      } else {
-        items[i] = items[i].copyWith(quantity: newQty);
-      }
-      await _saveProductCart(items);
+  static Future<void> _saveFavorites(List<ProductModel> items) async {
+    await wishlistBox.put('favorites', items.map((e) => e.toJson()).toList());
+  }
+
+  // Debug method to test cart operations
+  static Future<void> debugClearCartAndTest() async {
+    try {
+      await clearCart();
+    } catch (e) {
+      debugPrint("Error clearing cart: $e");
     }
   }
 
-  static Future<void> clearProductCart() async {
-    await cartBox.delete(productCartItemsKey);
+  static int get cartItemCount {
+    List<ProductCartItem> cart = getCartItems();
+    return cart.fold(0, (sum, item) => sum + item.quantity);
   }
 
-  static int get productCartItemCount {
-    final items = getProductCartItems();
-    return items.fold<int>(0, (sum, e) => sum + e.quantity);
+  static Future<void> _saveCartItems(List<ProductCartItem> cartItemsList) async {
+    List<Map<String, dynamic>> cartData = cartItemsList
+        .map((item) => item.toJson())
+        .toList();
+    await cartBox.put(cartItems, cartData);
   }
-
-  static double get productCartTotalPrice {
-    final items = getProductCartItems();
-    return items.fold<double>(0.0, (sum, e) => sum + (e.price * e.quantity));
-  }
-
   // ------------------- بقية دوالك كما هي -------------------
   // static Future<void> setCurrentUserInfo(CurrentUserModel? value) async {
   //   if (value != null) {
@@ -184,8 +248,9 @@ class CacheHelper {
   }
 
   static Future<void> setDateWithExpiry(int expiresInSeconds) {
-    DateTime expiryDateTime =
-        DateTime.now().add(Duration(seconds: expiresInSeconds));
+    DateTime expiryDateTime = DateTime.now().add(
+      Duration(seconds: expiresInSeconds),
+    );
     return box.put(date, expiryDateTime);
   }
 
@@ -218,14 +283,16 @@ class CacheHelper {
   }
 
   static List<ProductModel>? get wishlist {
-    List<ProductModel> productModel =
-        wishlistBox.values.toList().cast<ProductModel>();
+    List<ProductModel> productModel = wishlistBox.values
+        .toList()
+        .cast<ProductModel>();
     return productModel;
   }
 
   static List<ProductModel>? get cartItem {
-    List<ProductModel> productModel =
-        cartBox.values.toList().cast<ProductModel>();
+    List<ProductModel> productModel = cartBox.values
+        .toList()
+        .cast<ProductModel>();
     return productModel;
   }
 
@@ -238,7 +305,7 @@ class CacheHelper {
   static int? get expiresin => box.get(expiresIn);
   static DateTime? get datenow => box.get(date);
 
-// set
+  // set
   static Future<void> setUserInfo(LoginModel? value) async {
     if (value == null) return;
     await box.put(userModel, value.toJson()); // <-- خزّنه كـ Map
@@ -253,7 +320,6 @@ class CacheHelper {
     }
     return null;
   }
-
 
   static void deleteCertificates() {
     setToken(null);

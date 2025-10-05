@@ -14,6 +14,7 @@ const String getProductsBaseUrl = 'https://dummyjson.com/products';
 const getAllProduct = '${baseUrl}products';
 const getCategoriesUrl = '${baseUrl}products/categories';
 String productsByCategoryUrl(String slug) => '$baseUrl/products/category/$slug';
+const String getProfile = "${baseUrl}auth/me";
 
 // منتجات التصنيف المحدد
 

@@ -1,39 +1,21 @@
+import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
+
 class ProductCartItem {
-  final int id;
-  final String title;
-  final String thumbnail;
-  final double price;
+  final ProductModel product;
   final int quantity;
 
-  const ProductCartItem({
-    required this.id,
-    required this.title,
-    required this.thumbnail,
-    required this.price,
-    this.quantity = 1,
-  });
+  const ProductCartItem({required this.product, this.quantity = 1});
 
-  ProductCartItem copyWith({int? quantity}) => ProductCartItem(
-    id: id,
-    title: title,
-    thumbnail: thumbnail,
-    price: price,
-    quantity: quantity ?? this.quantity,
-  );
+  ProductCartItem copyWith({int? quantity}) =>
+      ProductCartItem(product: product, quantity: quantity ?? this.quantity);
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'thumbnail': thumbnail,
-    'price': price,
+    'product': product.toJson(),
     'quantity': quantity,
   };
 
   factory ProductCartItem.fromJson(Map<String, dynamic> map) => ProductCartItem(
-    id: (map['id'] as num).toInt(),
-    title: map['title'] as String? ?? '',
-    thumbnail: map['thumbnail'] as String? ?? '',
-    price: (map['price'] as num?)?.toDouble() ?? 0.0,
+    product: ProductModel.fromJson(map['product'] as Map<String, dynamic>),
     quantity: (map['quantity'] as num?)?.toInt() ?? 1,
   );
 }

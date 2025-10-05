@@ -1,6 +1,9 @@
+import 'package:eco_dumy/featuers/fav/favorites_screen.dart';
+import 'package:eco_dumy/featuers/fav/screen/2.dart';
 import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
 import 'package:eco_dumy/featuers/order/screen/order_screen.dart';
 import 'package:eco_dumy/featuers/product/screen/category/all_categories_screen.dart';
+import 'package:eco_dumy/featuers/profile/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,11 +25,11 @@ class RootScreen extends StatelessWidget {
   final List<Widget> screens = [
     HomeScreen(),
     const OrderScreen(),
-    const Placeholder(),
+    // const FavoritesScreen1(),
 
     AllCategoriesScreen(),
     // حط شاشة التصنيفات تبعك هون
-    const Placeholder(),
+    const ProfileScreen(),
   ];
 
   @override
