@@ -7,7 +7,7 @@ class SectionHeading extends StatelessWidget {
     this.titleStyle,
     this.showActionButton = true,
     required this.title,
-    this.buttonTitle = 'View all',
+    this.buttonTitle = 'View_All',
     this.onPressed,
   });
 

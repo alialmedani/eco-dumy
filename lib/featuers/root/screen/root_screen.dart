@@ -54,7 +54,7 @@ class RootScreen extends StatelessWidget {
                     icon: state.selectedIndex == 0
                         ? Icons.home
                         : Icons.home_outlined,
-                    label: "home".tr(),
+                    label: "Home".tr(),
                     state: state,
                     cubit: cubit,
                   ),
@@ -72,7 +72,7 @@ class RootScreen extends StatelessWidget {
                     icon: state.selectedIndex == 2
                         ? Icons.favorite
                         : Icons.favorite_border,
-                    label: "favourite".tr(),
+                    label: "Favourite".tr(),
                     state: state,
                     cubit: cubit,
                   ),
@@ -81,7 +81,7 @@ class RootScreen extends StatelessWidget {
                     icon: state.selectedIndex == 3
                         ? Icons.category
                         : Icons.category_outlined,
-                    label: "categories".tr(),
+                    label: "Categories".tr(),
                     state: state,
                     cubit: cubit,
                   ),

@@ -77,7 +77,14 @@ class OrderScreen extends StatelessWidget {
                 height: 200,
               ),
               const SizedBox(height: 20),
-              Text("No_items_in_your_cart".tr()),
+              Text(
+                "No_items_in_your_cart".tr(),
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.kTextColora,
+                ),
+              ),
             ],
           ),
         ),
@@ -209,7 +216,6 @@ class OrderScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  // color: dark ? ColorsManager.dark : ColorsManager.light,
                   color: AppColors.darka,
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(20.r),
@@ -217,29 +223,59 @@ class OrderScreen extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                       children: [
                         Text(
-                          '${"Total Payment".tr()}: ${total.toStringAsFixed(2)}',
+                          "total_payment".tr(),
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w600,
-                            // color: isDark ? ColorsManager.light : ColorsManager.darkBlue,
                             color: AppColors.lighta,
                           ),
                         ),
-                        const Spacer(),
-                        ElevatedButton(
-                          onPressed: () {
-                            /* Go to checkout */
-                          },
-                          child: Text("Checkout".tr()),
+                        Text(
+                          '  $total \$',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.lighta,
+                          ),
                         ),
                       ],
+                    ),
+                    SizedBox(height: 16.h),
+                    SizedBox(
+                      width: double.infinity, // الآن داخل Column، صارت صحيحة
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.kPrimaryColor2a,
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "checkout".tr(),
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.white,
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                            const Icon(
+                              Icons.add_shopping_cart_sharp,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

@@ -35,7 +35,7 @@ class CartItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.darka, // اللون الجديد
+      color: AppColors.darkerGreya,
 
       elevation: 7,
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -95,7 +95,8 @@ class CartItemCard extends StatelessWidget {
               children: [
                 const SizedBox(height: AppPaddingSize.padding_12),
                 Text(
-                  product.product.title,style: TextStyle(color: AppColors.lighta),
+                  product.product.title,
+                  style: TextStyle(color: AppColors.lighta),
                   // style: TextStyles(context).font18DarkBlueSemiBold(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -121,7 +122,8 @@ class CartItemCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppPaddingSize.padding_6),
                 Text(
-                  '${product.product.price} \$ × ${product.quantity}',style: TextStyle(color: AppColors.lighta), 
+                  '${product.product.price} \$ × ${product.quantity}',
+                  style: TextStyle(color: AppColors.lighta),
                   // style: TextStyles(context).font15DarkBlueMedium(context),
                 ),
                 const SizedBox(height: AppPaddingSize.padding_6),
@@ -129,19 +131,29 @@ class CartItemCard extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: onDecrease,
-                      icon: const Icon(Icons.remove,color: AppColors.lighta ,),
+                      icon: const Icon(Icons.remove, color: AppColors.lighta),
                     ),
                     Text(
                       '${product.quantity}',
-                      style: TextStyle(fontSize: 16.sp,color: AppColors.lighta),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: AppColors.lighta,
+                      ),
                     ),
                     IconButton(
                       onPressed: onIncrease,
-                      icon: const Icon(Icons.add,color: AppColors.lighta ,),
+                      icon: const Icon(Icons.add, color: AppColors.lighta),
                     ),
                   ],
                 ),
               ],
+            ),
+          ),
+          IconButton(
+            onPressed:  (){},
+            icon: const Icon(
+              Icons.remove_shopping_cart_outlined,
+              color: AppColors.kPrimaryColor2a,
             ),
           ),
         ],

@@ -151,15 +151,15 @@ class DetailsPage extends StatelessWidget {
                               value: product.returnPolicy,
                             ),
                             InfoRowWidget(
-                              title: "Min_Order".tr(),
+                              title: "min_Order".tr(),
                               value: '${product.minimumOrderQuantity}',
                             ),
                             InfoRowWidget(
-                              title: "Weight".tr(),
+                              title: "weight".tr(),
                               value: '${product.weight} g',
                             ),
                             InfoRowWidget(
-                              title: "Dimensions".tr(),
+                              title: "dimensions".tr(),
                               value:
                                   '${product.dimensions.width} x ${product.dimensions.height} x ${product.dimensions.depth} cm',
                             ),

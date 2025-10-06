@@ -44,22 +44,22 @@ class AccountPage extends StatelessWidget {
                     ),
                     _buildProfileDetailCard(
                       context: context,
-                      label: "Email1",
+                      label: "Email1".tr(),
                       value: CacheHelper.userInfo?.email ?? "",
                     ),
                     _buildProfileDetailCard(
                       context: context,
-                      label: "First_Name",
+                      label: "First_Name".tr(),
                       value: CacheHelper.userInfo?.firstName ?? "",
                     ),
                     _buildProfileDetailCard(
                       context: context,
-                      label: "Last_Name",
+                      label: "Last_Name".tr(),
                       value: CacheHelper.userInfo?.lastName ?? "",
                     ),
                     _buildProfileDetailCard(
                       context: context,
-                      label: "Gender",
+                      label: "Gender".tr(),
                       value: CacheHelper.userInfo?.gender ?? "",
                     ),
                   ],
