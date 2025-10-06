@@ -150,7 +150,7 @@ class CartItemCard extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed:  (){},
+            onPressed:  onTrailingPressed,
             icon: const Icon(
               Icons.remove_shopping_cart_outlined,
               color: AppColors.kPrimaryColor2a,

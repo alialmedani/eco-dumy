@@ -125,7 +125,7 @@ class HomeScreen extends StatelessWidget {
                             SectionHeading(
                               title: "Popular_Categories".tr(),
                               textColor: AppColors.darkGreya,
-                              showActionButton: true,
+                              showActionButton: true,buttonTitle: "View_All".tr(),
                               onPressed: () {},
                             ),
                             const SizedBox(height: AppPaddingSize.padding_16),

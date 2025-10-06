@@ -143,7 +143,7 @@ class _GridWithPrefetch extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.darka,
-                borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.06),
@@ -153,7 +153,7 @@ class _GridWithPrefetch extends StatelessWidget {
                 ],
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // صورة المعاينة (صورة واحدة لكل كاتيجوري) عبر الكيوبت
                   SizedBox(
@@ -166,39 +166,39 @@ class _GridWithPrefetch extends StatelessWidget {
                         final img = cubit.getCategoryThumb(slug);
 
                         // Above-the-fold: أول 6 عناصر بأولوية أعلى
-                        final isAboveTheFold = index < 6;
+                        final isAboveTheFold = index < 10;
                         if ((img == null || img.isEmpty) &&
                             slug.isNotEmpty &&
                             isAboveTheFold) {
                           cubit.queueCategoryThumb(slug, priority: true);
                         }
 
-                        if (img == null || img.isEmpty) {
+                       if (img == null || img.isEmpty) {
                           return const _CatImagePlaceholder();
                         }
 
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            AppPaddingSize.padding_16,
-                          ),
+                       return ClipOval(
                           child: Image.network(
                             img,
+                            width: 90,
+                            height: 90,
                             fit: BoxFit.cover,
+                            loadingBuilder: (ctx, child, progress) {
+                              if (progress == null) return child;
+                              return const _CatImagePlaceholder(); // يظهر الـ loading أثناء التحميل
+                            },
                             errorBuilder: (_, __, ___) =>
-                                const _CatImagePlaceholder(),
-                            loadingBuilder: (ctx, child, prog) => prog == null
-                                ? child
-                                : const _CatImageSkeleton(),
+                                Container(), // فشل التحميل يظهر فاضي
                           ),
                         );
+
+
                       },
                     ),
                   ),
                   const SizedBox(height: 8),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddingSize.padding_8,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
                       title,
                       maxLines: 1,
@@ -221,43 +221,22 @@ class _GridWithPrefetch extends StatelessWidget {
 }
 
 // ---- Widgets بسيطة للـ Placeholder / Skeleton ----
-
 class _CatImagePlaceholder extends StatelessWidget {
   const _CatImagePlaceholder();
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 90,
+      height: 90,
       decoration: BoxDecoration(
         color: AppColors.lightGraya,
         borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
       ),
       child: const Center(
-        child: Icon(
-          Icons.image_not_supported,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
           color: AppColors.darkBluea,
-          size: 28,
-        ),
-      ),
-    );
-  }
-}
-
-class _CatImageSkeleton extends StatelessWidget {
-  const _CatImageSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.lightGraya.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
-      ),
-      child: const Center(
-        child: SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator(strokeWidth: 2),
         ),
       ),
     );

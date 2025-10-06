@@ -8,7 +8,6 @@ import 'package:eco_dumy/core/constant/app_padding/app_padding.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
 import 'package:eco_dumy/featuers/product/screen/product_list_view_item.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
