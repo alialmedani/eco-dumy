@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
@@ -70,123 +71,8 @@ class ProductsByCategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _gridItem(
-    BuildContext context, {
-    required ProductModel product,
-    required int index,
-  }) {
-    final theme = Theme.of(context);
-
-    String? img;
-    if ((product.thumbnail ?? '').toString().isNotEmpty) {
-      img = product.thumbnail!.toString();
-    } else if ((product.images is List) &&
-        (product.images?.isNotEmpty ?? false)) {
-      img = product.images!.first?.toString();
-    }
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: Duration(milliseconds: 300 + index * 50),
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: Transform.translate(
-            offset: Offset(0, 30 * (1 - value)),
-            child: Transform.scale(scale: 0.95 + 0.05 * value, child: child),
-          ),
-        );
-      },
-      child: Material(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
-        elevation: 3,
-        shadowColor: Colors.black.withOpacity(0.08),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
-          onTap: () {
-            // نفس صفحة التفاصيل تبعك
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => DetailsPage(product: product)),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(AppPaddingSize.padding_12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // صورة
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                    AppPaddingSize.padding_12,
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 1.5,
-                    child: (img == null || img.isEmpty)
-                        ? _imageSkeletonRounded(
-                            radius: AppPaddingSize.padding_12,
-                          )
-                        : _netImage(
-                            img,
-                            radius: AppPaddingSize.padding_12,
-                            fit: BoxFit.cover,
-                            error: const _ImagePlaceholder(),
-                          ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // عنوان
-                Text(
-                  product.title?.toString() ?? '',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textDarka,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                // سعر + تقييم
-                Row(
-                  children: [
-                    if (product.price != null)
-                      Text(
-                        '${product.price}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppColors.graya,
-                        ),
-                      ),
-                    if (product.price != null && product.rating != null)
-                      const SizedBox(width: 10),
-                    if (product.rating != null)
-                      Row(
-                        children: [
-                          const Icon(Icons.star, size: 14, color: Colors.amber),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${product.rating}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppColors.graya,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   SliverToBoxAdapter _buildCarousel(List<ProductModel> list) {
-    final items = list
-        .where((p) => (p.images?.isNotEmpty ?? false))
-        .take(5)
-        .toList();
+    final items = list.where((p) => (p.images.isNotEmpty)).take(5).toList();
     if (items.isEmpty) {
       return const SliverToBoxAdapter(child: SizedBox.shrink());
     }
@@ -228,10 +114,17 @@ class ProductsByCategoryPage extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(22),
-                    child: _netImage(
-                      first,
+                    child: CachedNetworkImage(
+                      imageUrl: first, // أول صورة من المنتج
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[800]!,
+                        highlightColor: Colors.grey[700]!,
+                        child: Container(color: Colors.grey[850]),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.broken_image, size: 100),
                       fit: BoxFit.cover,
-                      error: const Icon(Icons.broken_image, size: 100),
+                      width: double.infinity,
                     ),
                   ),
                 ),
@@ -295,7 +188,7 @@ class ProductsByCategoryPage extends StatelessWidget {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              if (products.isNotEmpty) _buildCarousel(products),
+              _buildCarousel(products),
 
               SliverPadding(
                 padding: const EdgeInsets.symmetric(

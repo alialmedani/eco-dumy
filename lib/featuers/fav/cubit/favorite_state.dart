@@ -1,20 +1,29 @@
-import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
-import 'package:meta/meta.dart';
+import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
+import 'package:equatable/equatable.dart';
 
-@immutable
-sealed class FavoriteState {}
-
-final class FavoriteInitial extends FavoriteState {}
-
-final class FavoriteLoading extends FavoriteState {}
-
-final class FavoriteLoaded extends FavoriteState {
-  final List<ProductCartItem> cartItems;
-  final int totalItems;
-  FavoriteLoaded({required this.cartItems, required this.totalItems});
+abstract class FavoriteState extends Equatable {
+  const FavoriteState();
+  @override
+  List<Object> get props => [];
 }
 
-final class FavoriteError extends FavoriteState {
+class FavoriteInitial extends FavoriteState {}
+
+class FavoriteLoading extends FavoriteState {}
+
+class FavoriteLoaded extends FavoriteState {
+  final List<ProductModel> items;
+
+  const FavoriteLoaded(this.items);
+
+  @override
+  List<Object> get props => [items];
+}
+
+class FavoriteError extends FavoriteState {
   final String message;
-  FavoriteError(this.message);
+  const FavoriteError(this.message);
+
+  @override
+  List<Object> get props => [message];
 }

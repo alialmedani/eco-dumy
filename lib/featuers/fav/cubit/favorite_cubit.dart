@@ -4,159 +4,55 @@ import 'package:eco_dumy/core/boilerplate/pagination/cubits/pagination_cubit.dar
 import 'package:eco_dumy/core/classes/cashe_helper.dart';
 import 'package:eco_dumy/featuers/fav/cubit/favorite_state.dart';
 import 'package:eco_dumy/featuers/order/data/model/cart_item_model.dart';
- 
-class FavoriteCubit extends Cubit<FavoriteState> {
+import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
+ class FavoriteCubit extends Cubit<FavoriteState> {
   FavoriteCubit() : super(FavoriteInitial());
-  PaginationCubit? favouritetCubit;
 
+  final List<ProductModel> _favorites = [];
 
+  List<ProductModel> get items => List.unmodifiable(_favorites);
 
-  void loadFavorite() {
+  // ----------------- Load Favorites -----------------
+  void loadFavorites(List<ProductModel> initialList) async {
+    emit(FavoriteLoading());
     try {
-      emit(FavoriteLoading());
-      final cartItems = CacheHelper.getCartItems();
-      final totalItems = CacheHelper.cartItemCount;
-      emit(FavoriteLoaded(cartItems: cartItems, totalItems: totalItems));
+      await Future.delayed(const Duration(milliseconds: 300));
+      _favorites.clear();
+      _favorites.addAll(initialList);
+      emit(FavoriteLoaded(List.from(_favorites)));
     } catch (e) {
-      emit(FavoriteError('Failed to load cart: ${e.toString()}'));
+      emit(FavoriteError(e.toString()));
     }
   }
 
-  
- 
-
-  Future<void> addToFav(ProductCartItem cartItem) async {
+  // ----------------- Toggle Favorite -----------------
+  Future<void> toggle(ProductModel product) async {
     try {
-      await CacheHelper.addToCart(cartItem);
-      loadFavorite(); // Reload cart to update UI
+      if (_favorites.any((p) => p.id == product.id)) {
+        _favorites.removeWhere((p) => p.id == product.id);
+      } else {
+        _favorites.add(product);
+      }
+      emit(FavoriteLoaded(List.from(_favorites)));
     } catch (e) {
-      emit(FavoriteError('Failed to add item to cart: ${e.toString()}'));
+      emit(FavoriteError(e.toString()));
     }
   }
 
-  // Future<void> removeFromFavorite(
-  //   int productId,
-  //   String productTitle,
-  //   String productThumbnail,
-  //   double prodcutPrice,
-  // ) async {
-  //   try {
-  //     await CacheHelper.removeFromCart(   
- 
-       
-  //       productThumbnail,
-  //       prodcutPrice,
-    
-  //   );
-  //     loadFavorite(); // Reload cart to update UI
-  //   } catch (e) {
-  //     emit(FavoriteError('Failed to remove item from cart: ${e.toString()}'));
-  //   }
-  // }
-
-  
-
-  Future<void> clearCart() async {
+  // ----------------- Add product to favorites -----------------
+  Future<void> addToFavorite(ProductModel product) async {
     try {
-      await CacheHelper.clearCart();
-      loadFavorite(); // Reload cart to update UI
+      if (!_favorites.any((p) => p.id == product.id)) {
+        _favorites.add(product);
+        emit(FavoriteLoaded(List.from(_favorites)));
+      }
     } catch (e) {
-      emit(FavoriteError('Failed to clear cart: ${e.toString()}'));
+      emit(FavoriteError(e.toString()));
     }
   }
+
+  // ----------------- Check if product is favorite -----------------
+  bool isFavorite(ProductModel product) {
+    return _favorites.any((p) => p.id == product.id);
   }
-
-
-
-
-
-
-
-
-
-
-
-  // محوّل آمن من dynamic -> ProductModel
-//   ProductModel _ensureProduct(dynamic x) {
-//     if (x is ProductModel) return x;
-//     if (x is Map) {
-//       return ProductModel.fromJson(Map<String, dynamic>.from(x));
-//     }
-//     throw ArgumentError('Invalid favorite item type: ${x.runtimeType}');
-//   }
-
-//   // استخراج معرّف كنقطة مقارنة موحّدة (int)
-//   int _extractId(ProductModel p) {
-//     // لو كان p.id أصلاً int تمام؛ لو كان String، حوّله إلى int إن أمكن.
-//     final id = p.id;
-//     return id;
-//   }
-
-//   Future<void> load() async {
-//     try {
-//       emit(FavoriteLoading());
-
-//       // قد يرجع Maps من الكاش؛ حوّلهم لمنتجات
-//       final raw =
-//           CacheHelper.getFavorites(); // List<dynamic> أو List<ProductModel>
-//       final list = raw.map(_ensureProduct).toList();
-
-//       // ids مشتقة من المنتجات نفسها لضمان التطابق
-//       final ids = list.map(_extractId).toSet();
-
-//       emit(FavoriteLoaded(items: list, ids: ids));
-//     } catch (e) {
-//       emit(FavoriteError('Failed to load favorites: $e'));
-//     }
-//   }
-
-//   Future<void> toggle(ProductModel product) async {
-//     try {
-//       final prev = state;
-
-//       if (prev is FavoriteLoaded) {
-//         final current = List<ProductModel>.from(prev.items);
-//         final pid = _extractId(product);
-//         final idx = current.indexWhere((p) => _extractId(p) == pid);
-
-//         if (idx >= 0) {
-//           current.removeAt(idx);
-//         } else {
-//           current.add(product);
-//         }
-
-//         // emit فوري (Optimistic)
-//         final idsNow = current.map(_extractId).toSet();
-//         emit(FavoriteLoaded(items: current, ids: idsNow));
-
-//         // خزّن بالكاش، ثم (اختياري) أعد المزامنة
-//         await CacheHelper.toggleFavorite(product);
-
-//         final syncedRaw = CacheHelper.getFavorites();
-//         final synced = syncedRaw.map(_ensureProduct).toList();
-//         emit(
-//           FavoriteLoaded(items: synced, ids: synced.map(_extractId).toSet()),
-//         );
-//       } else {
-//         // أول مرة
-//         await CacheHelper.toggleFavorite(product);
-//         final raw = CacheHelper.getFavorites();
-//         final list = raw.map(_ensureProduct).toList();
-//         emit(FavoriteLoaded(items: list, ids: list.map(_extractId).toSet()));
-//       }
-//     } catch (e) {
-//       emit(FavoriteError('Failed to toggle favorite: $e'));
-//     }
-//   }
-
-//   bool isFav(int productId) {
-//     final s = state;
-//     if (s is FavoriteLoaded) {
-//       // دعم للحالات التي يصل فيها productId كسلسلة
-//       final canonical = productId;
-//       if (s.ids.contains(canonical)) return true;
-//       return s.items.any((p) => _extractId(p) == canonical);
-//     }
-//     return false;
-//   }
-// }
+}

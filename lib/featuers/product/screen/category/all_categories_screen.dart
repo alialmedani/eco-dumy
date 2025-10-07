@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/featuers/product/cubit/product_cubit.dart';
 import 'package:eco_dumy/featuers/product/screen/category/products_by_category_page.dart';
@@ -75,27 +76,21 @@ class _GridWithPrefetch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Prefetch أثناء السكروول
     return NotificationListener<ScrollNotification>(
       onNotification: (notif) {
         if (notif is ScrollUpdateNotification) {
           final metrics = notif.metrics;
           final pixels = metrics.pixels;
 
-          // ارتفاع الصف الواحد ~ ارتفاع العنصر + المسافة بين الصفوف
           final rowHeight = _kMainAxisExtent + _kRowSpacing;
           final firstVisibleRow = (pixels / rowHeight).floor().clamp(
             0,
             1 << 30,
           );
-
-          // أول اندكس ظاهر بالتقريب
           final firstVisibleIndex = (firstVisibleRow * _kCrossAxisCount).clamp(
             0,
             list.length - 1,
           );
-
-          // آخر اندكس نعمل له prefetch (صفّين قدّام)
           final lastPrefetchRow = firstVisibleRow + _kPrefetchRows;
           final lastPrefetchIndex =
               (((lastPrefetchRow + 1) * _kCrossAxisCount) - 1).clamp(
@@ -109,7 +104,6 @@ class _GridWithPrefetch extends StatelessWidget {
             if (slug.isEmpty) continue;
             final cached = cubit.getCategoryThumb(slug);
             if (cached == null || cached.isEmpty) {
-              // prefetch بدون أولوية (مش فوق الطيّة)
               cubit.queueCategoryThumb(slug);
             }
           }
@@ -155,7 +149,6 @@ class _GridWithPrefetch extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // صورة المعاينة (صورة واحدة لكل كاتيجوري) عبر الكيوبت
                   SizedBox(
                     height: 110,
                     width: double.infinity,
@@ -165,7 +158,6 @@ class _GridWithPrefetch extends StatelessWidget {
                         final cubit = context.read<ProductCubit>();
                         final img = cubit.getCategoryThumb(slug);
 
-                        // Above-the-fold: أول 6 عناصر بأولوية أعلى
                         final isAboveTheFold = index < 10;
                         if ((img == null || img.isEmpty) &&
                             slug.isNotEmpty &&
@@ -173,26 +165,48 @@ class _GridWithPrefetch extends StatelessWidget {
                           cubit.queueCategoryThumb(slug, priority: true);
                         }
 
-                       if (img == null || img.isEmpty) {
+                        if (img == null || img.isEmpty) {
                           return const _CatImagePlaceholder();
                         }
 
-                       return ClipOval(
-                          child: Image.network(
-                            img,
-                            width: 90,
-                            height: 90,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (ctx, child, progress) {
-                              if (progress == null) return child;
-                              return const _CatImagePlaceholder(); // يظهر الـ loading أثناء التحميل
-                            },
-                            errorBuilder: (_, __, ___) =>
-                                Container(), // فشل التحميل يظهر فاضي
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.lightGraya,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.06),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                         
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: img,
+                              fit: BoxFit.fitHeight,
+                              placeholder: (context, url) => Container(
+                                color: Colors.white, // خلفية أبيض أثناء التحميل
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.lightGraya,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color:
+                                    Colors.white, // خلفية أبيض عند فشل التحميل
+                                child: const Icon(
+                                  Icons.image_not_supported,
+                                  color: AppColors.darkBluea,
+                                  size: 28,
+                                ),
+                              ),
+                            ),
                           ),
                         );
-
-
                       },
                     ),
                   ),
@@ -220,7 +234,7 @@ class _GridWithPrefetch extends StatelessWidget {
   }
 }
 
-// ---- Widgets بسيطة للـ Placeholder / Skeleton ----
+// ---- Placeholder ----
 class _CatImagePlaceholder extends StatelessWidget {
   const _CatImagePlaceholder();
 
@@ -229,9 +243,16 @@ class _CatImagePlaceholder extends StatelessWidget {
     return Container(
       width: 90,
       height: 90,
-      decoration: BoxDecoration(
+    decoration: BoxDecoration(
         color: AppColors.lightGraya,
-        borderRadius: BorderRadius.circular(AppPaddingSize.padding_16),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: const Center(
         child: CircularProgressIndicator(

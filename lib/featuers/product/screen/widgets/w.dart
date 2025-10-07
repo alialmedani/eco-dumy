@@ -39,7 +39,11 @@ class FavIconOnly extends StatelessWidget {
                 : Colors.white.withOpacity(0.9),
           ),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () async {
+
+                  final cubit = context.read<FavoriteCubit>();
+    await cubit.addToFavorite(product); // إضافة المنتج مباشرة للمفضلة
+            },
             // onPressed: () => context.read<FavoriteCubit>().toggle(product),
             icon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 150),
