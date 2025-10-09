@@ -129,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {},
                             ),
                             const SizedBox(height: AppPaddingSize.padding_16),
-                            const CategoriesPaginationBar(),
+                            // const CategoriesPaginationBar(),
 
                             const SizedBox(height: AppPaddingSize.padding_16),
                             SectionHeading(

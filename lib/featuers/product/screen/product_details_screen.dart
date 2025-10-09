@@ -49,8 +49,7 @@ class DetailsPage extends StatelessWidget {
                   ),
                   FavIconOnly(product: product, dark: true,),
 
-                  // ❤️ زرّ المفضلة مع FavoriteCubit
-                
+                 
                 ],
               ),
 

@@ -1,29 +1,17 @@
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
-import 'package:equatable/equatable.dart';
 
-abstract class FavoriteState extends Equatable {
-  const FavoriteState();
-  @override
-  List<Object> get props => [];
-}
+abstract class FavoriteState {}
 
 class FavoriteInitial extends FavoriteState {}
 
 class FavoriteLoading extends FavoriteState {}
 
 class FavoriteLoaded extends FavoriteState {
-  final List<ProductModel> items;
-
-  const FavoriteLoaded(this.items);
-
-  @override
-  List<Object> get props => [items];
+  final List<ProductModel> favorites;
+  FavoriteLoaded(this.favorites);
 }
 
 class FavoriteError extends FavoriteState {
   final String message;
-  const FavoriteError(this.message);
-
-  @override
-  List<Object> get props => [message];
+  FavoriteError(this.message);
 }

@@ -9,6 +9,7 @@ import 'package:eco_dumy/featuers/order/cubit/order_cubit.dart';
 import 'package:eco_dumy/featuers/order/data/model/product_to_cart_ext.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 import 'package:eco_dumy/featuers/product/screen/product_details_screen.dart';
+import 'package:eco_dumy/featuers/product/screen/widgets/w.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -74,53 +75,7 @@ class ProductListViewItem extends StatelessWidget {
                     right: isArabic ? null : 0,
                     top: 0,
 
-                    // child: BlocBuilder<FavouriteCubit, FavouriteState>(
-                    //   builder: (context, state) {
-                    //     final isFavourite = state.favourites.any(
-                    //       (p) => p.id == product!.id,
-                    //     );
-                    //     return
-                    child: Container(
-                      width: AppPaddingSize.padding_40,
-                      height: AppPaddingSize.padding_40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        // color: dark
-                        //     ? ColorsManager.black.withOpacity(0.9)
-                        //     : ColorsManager.white.withOpacity(0.9),
-                        color: AppColors.darkerGreya.withValues(alpha: 0.9),
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          // isFavourite
-                          //     ? Icons.favorite
-                          //     : Icons.favorite_border,
-                          Icons.favorite,
-                          color: Colors.red,
-                          size: AppPaddingSize.padding_24,
-                        ),
-                        onPressed: () {
-                          //   final favCubit = context.read<FavouriteCubit>();
-                          //   final isFavourite = favCubit.state.favourites.any(
-                          //     (p) => p.id == product!.id,
-                          //   );
-
-                          //   favCubit.addOrRemoveFavourite(product!);
-
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     SnackBar(
-                          //       backgroundColor: Appc.kPrimaryColor2,
-                          //       duration: const Duration(milliseconds: 600),
-                          //       content: Text(
-                          //         isFavourite
-                          //             ? '${product?.title} ${S.current.removed_from_Favourite}'
-                          //             : '${product?.title} ${S.current.added_to_Favourite}',
-                          //       ),
-                          //     ),
-                          //   );
-                        },
-                      ),
-                    ),
+                    child: FavIconOnly(product: product!, dark: true),
                   ),
 
                   Positioned(

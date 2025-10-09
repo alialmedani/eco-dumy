@@ -1,13 +1,9 @@
-// fav_icon_only.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:eco_dumy/featuers/fav/cubit/favorite_cubit.dart';
 import 'package:eco_dumy/featuers/fav/cubit/favorite_state.dart';
 import 'package:eco_dumy/featuers/product/data/model/product_model.dart';
 
-/// أيقونة مفضّلة تُعيد البناء لوحدها فقط.
-/// - كبسة: toggle في الـCubit.
-/// - تعتمد BlocSelector لتحديث الأيقونة فقط.
 class FavIconOnly extends StatelessWidget {
   final ProductModel product;
   final bool dark;
@@ -25,7 +21,7 @@ class FavIconOnly extends StatelessWidget {
     return BlocSelector<FavoriteCubit, FavoriteState, bool>(
       selector: (state) {
         if (state is FavoriteLoaded) {
-          // return state.contains(product.id);
+          return state.favorites.any((p) => p.id == product.id);
         }
         return false;
       },
@@ -40,11 +36,9 @@ class FavIconOnly extends StatelessWidget {
           ),
           child: IconButton(
             onPressed: () async {
-
-                  final cubit = context.read<FavoriteCubit>();
-    await cubit.addToFavorite(product); // إضافة المنتج مباشرة للمفضلة
+              final cubit = context.read<FavoriteCubit>();
+              await cubit.toggle(product);
             },
-            // onPressed: () => context.read<FavoriteCubit>().toggle(product),
             icon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 150),
               transitionBuilder: (child, anim) =>
@@ -56,7 +50,6 @@ class FavIconOnly extends StatelessWidget {
                 size: iconSize,
               ),
             ),
-            tooltip: isFav ? 'Remove from favorites' : 'Add to favorites',
           ),
         );
       },
