@@ -7,6 +7,8 @@ extension AppColors on ColorScheme {
   static const Color textSecondarya = Color(0xFF6C757D);
   static const Color textWhitea = Colors.white;
   static const Color lightGraya = Color(0xFFC2C2C2);
+  static const Color lighterGreya = Color(0xFFEDEDED);
+  static const Color moreLightGreya = Color(0xFFFDFDFF);
 
 static const Color lighta = Color(0xFFF6F6F6);
   static const Color darka = Color(0xFF272727);

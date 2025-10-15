@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:eco_dumy/featuers/auth/data/repo/auth_repository.dart';
 import 'package:eco_dumy/featuers/auth/data/uscase/login_usecase.dart';
+import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
  
 import 'dart:async';
@@ -10,7 +11,9 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
-
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   bool isLoginButtonEnabled = false;
   bool isVerificationButtonEnabled = false;
   bool canResend = false;

@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:eco_dumy/featuers/auth/screen/widget/ll.dart';
 import 'package:eco_dumy/featuers/cart/cubit/cart_cubit.dart';
 import 'package:eco_dumy/check_update.dart';
 
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
             title: 'Task App',
             theme: appThemeData[AppTheme.light],
             // home: CacheHelper.token != null ? SplashSscreen1() : LoginScreen(),
-            home: RootScreen(),
+            home: LoginScreen1(),
           );
         },
       ),

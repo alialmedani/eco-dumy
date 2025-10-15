@@ -1,5 +1,6 @@
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:eco_dumy/featuers/auth/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/auth/screen/widget/ll.dart';
 import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
 import 'package:eco_dumy/featuers/login/ui/login_screen.dart';
 import 'package:eco_dumy/featuers/root/screen/root_screen.dart';
@@ -140,7 +141,7 @@ class _SplashSscreen1State extends State<SplashSscreen1>
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, a, __) => const LoginScreen(),
+        pageBuilder: (_, a, __) => const LoginScreen1(),
         transitionsBuilder: (_, animation, __, child) => FadeTransition(
           opacity: animation,
           child: SlideTransition(

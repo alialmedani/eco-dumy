@@ -8,6 +8,7 @@ import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
 import 'package:eco_dumy/featuers/auth/screen/login_screen.dart';
+import 'package:eco_dumy/featuers/auth/screen/widget/ll.dart';
 import 'package:eco_dumy/featuers/profile/screen/account_page.dart';
 import 'package:eco_dumy/featuers/profile/screen/custom_profile_menu.dart';
 import 'package:eco_dumy/featuers/profile/screen/custom_profile_pic.dart';
@@ -78,7 +79,7 @@ class ProfileScreen extends StatelessWidget {
               icon: "assets/icons/Log_out.svg",
               press: () {
                 CacheHelper.box.clear();
-                Navigation.pushAndRemoveUntil(LoginScreen());
+                Navigation.pushAndRemoveUntil(LoginScreen1());
                 // Navigator.pushReplacementNamed(
                 //   context,
                 //   Routes.loginScreen,

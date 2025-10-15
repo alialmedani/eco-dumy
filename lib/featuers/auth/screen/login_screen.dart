@@ -8,6 +8,7 @@ import 'package:eco_dumy/core/constant/text_styles/font_size.dart';
 import 'package:eco_dumy/core/utils/Navigation/navigation.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/data/model/login_model.dart';
+import 'package:eco_dumy/featuers/auth/screen/widget/email_and_password.dart';
 import 'package:eco_dumy/featuers/home/screen/home_screen.dart';
 
 import 'package:flutter/material.dart';
@@ -97,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: AppPaddingSize.padding_16),
                     Text(
-                      "'login_hello_again'.tr()",
+                      "login_hello_again".tr(),
                       textAlign: TextAlign.center,
                       style: AppTextStyle.getBoldStyle(
                         fontSize: AppFontSize.size_22,
@@ -106,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: AppPaddingSize.padding_8),
                     Text(
-                      "   'login_welcome_back'.tr()",
+                      "login_welcome_back".tr(),
                       textAlign: TextAlign.center,
                       style: AppTextStyle.getRegularStyle(
                         fontSize: AppFontSize.size_14,
@@ -114,6 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: AppPaddingSize.padding_24),
+                    const EmailAndPassword(),
 
                     TextFormField(
                       controller: _phoneCtl,
