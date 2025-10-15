@@ -1,4 +1,3 @@
- 
 import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +14,7 @@ class AppTextFormField extends StatelessWidget {
   final Color? backgroundColor;
   final TextEditingController? controller;
   final String? Function(String?)? validator; // ✅ صارت optional
+  final Function(String)? onChanged; // ✅ تمت الإضافة
 
   const AppTextFormField({
     super.key,
@@ -29,11 +29,14 @@ class AppTextFormField extends StatelessWidget {
     this.backgroundColor,
     this.controller,
     this.validator,
+    this.onChanged, // ✅ تمت الإضافة
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChanged, // ✅ تمريرها هنا
+
       controller: controller,
       decoration: InputDecoration(
         //default padding ll text
@@ -53,10 +56,7 @@ class AppTextFormField extends StatelessWidget {
         enabledBorder:
             enableBorder ??
             OutlineInputBorder(
-              borderSide: BorderSide(
-                color: AppColors.lighterGreya,
-                width: 1.3,
-              ),
+              borderSide: BorderSide(color: AppColors.lighterGreya, width: 1.3),
               borderRadius: BorderRadius.circular(16.0),
             ),
         errorBorder: OutlineInputBorder(
@@ -67,22 +67,24 @@ class AppTextFormField extends StatelessWidget {
           borderSide: const BorderSide(color: Colors.red, width: 1.3),
           borderRadius: BorderRadius.circular(16.0),
         ),
-        hintStyle: hintSytle ??TextStyle(
-    fontSize: 14.sp,
-    fontWeight: FontWeight.w400,
-    color: AppColors.lightGraya,
-  ),
+        hintStyle:
+            hintSytle ??
+            TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w400,
+              color: AppColors.lightGraya,
+            ),
         hintText: hintText,
         suffixIcon: suffixIcon,
         fillColor: backgroundColor ?? AppColors.moreLightGreya,
         filled: true,
       ),
       obscureText: isObscureText ?? false,
-      style:TextStyle(
-    fontSize: 14.sp,
-    fontWeight: FontWeight.w500,
-    color: AppColors.darkBluea,
-  ),
+      style: TextStyle(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w500,
+        color: AppColors.darkBluea,
+      ),
       validator: validator,
     );
   }

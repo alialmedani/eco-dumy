@@ -1,4 +1,3 @@
- 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:eco_dumy/featuers/auth/cubit/auth_cubit.dart';
 import 'package:eco_dumy/featuers/auth/screen/widget/app_regex.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmailAndPassword extends StatefulWidget {
-  const   EmailAndPassword({super.key});
+  const EmailAndPassword({super.key});
 
   @override
   State<EmailAndPassword> createState() => _EmailAndPasswordState();
@@ -51,7 +50,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
       child: Column(
         children: [
           AppTextFormField(
-            hintText:  "Email".tr(),
+            hintText: "Email".tr(),
             // validator: (value) {
             //   if (value == null ||
             //       value.isEmpty ||
@@ -59,11 +58,15 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
             //     return 'Please Enter A Valid Email';
             //   }
             // },
-            controller: context.read<AuthCubit>().emailController,
+            onChanged: (value) {
+              context.read<AuthCubit>().loginParams.username = value.trim();
+            },
           ),
           verticalSpace(18),
           AppTextFormField(
-            controller: context.read<AuthCubit>().passwordController,
+            onChanged: (value) {
+              context.read<AuthCubit>().loginParams.password = value.trim();
+            },
             hintText: "Password".tr(),
             isObscureText: isObscureText,
             suffixIcon: GestureDetector(

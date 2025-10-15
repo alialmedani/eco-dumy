@@ -1,4 +1,4 @@
- import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
+import 'package:eco_dumy/core/constant/app_colors/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,7 +11,8 @@ class AppTextButton extends StatelessWidget {
   final double? buttonhight;
   final String buttonText;
   final TextStyle textStyle;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed; // ✅ صار اختياري
+
   const AppTextButton({
     super.key,
     this.borderRadius,
@@ -22,7 +23,7 @@ class AppTextButton extends StatelessWidget {
     this.buttonhight,
     required this.buttonText,
     required this.textStyle,
-    required this.onPressed,
+    this.onPressed, // ✅ صار اختياري
   });
 
   @override
@@ -47,7 +48,7 @@ class AppTextButton extends StatelessWidget {
           Size(buttonWidth?.w ?? double.maxFinite, buttonhight ?? 50.h),
         ),
       ),
-      onPressed: onPressed,
+      onPressed: onPressed, // لو null، CreateModel رح يتعامل مع الضغط
       child: Text(buttonText, style: textStyle),
     );
   }
